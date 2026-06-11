@@ -1,0 +1,14 @@
+
+> dev
+> next dev
+
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.198.1:3000
+
+ ✓ Starting...
+ ✓ Ready in 1871ms
+ ○ Compiling /register ...
+ ✓ Compiled /register in 2.9s (565 modules)
+ GET /login 200 in 3352ms
+ GET /register 200 in 3229ms
