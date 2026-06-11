@@ -1,8 +1,19 @@
+"use client";
+
+import type { FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, CircleHelp, Home, LockKeyhole } from "lucide-react";
 import { authStyles as styles } from "./auth-styles";
 
 export default function LoginForm() {
+  const router = useRouter();
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    router.push("/dashboard");
+  }
+
   return (
     <main style={styles.page}>
       <header style={styles.header}>
@@ -41,7 +52,7 @@ export default function LoginForm() {
           </div>
         </aside>
 
-        <form style={styles.form} action="#">
+        <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.heading}>
             <p style={styles.eyebrow}>Welcome back</p>
             <h1 style={styles.title}>Log in to StayNest</h1>
