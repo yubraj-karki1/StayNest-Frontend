@@ -470,10 +470,10 @@ export default function DashboardPage() {
               <User size={12} aria-hidden="true" />
               <span>Profile</span>
             </a>
-            <button type="button" style={styles.notification} aria-label="Notifications">
+            <Link href="/notifications" style={styles.notification} aria-label="Notifications">
               <Bell size={12} aria-hidden="true" />
               <span style={styles.dot} />
-            </button>
+            </Link>
             <Link href="/login" style={styles.navLink}>
               <LogOut size={11} aria-hidden="true" />
               <span>Logout</span>
