@@ -9,57 +9,7 @@ import {
   Search,
   User,
 } from "lucide-react";
-
-const properties = [
-  {
-    status: "single",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 7500/month",
-    image:
-      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    status: "shared",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 12000/month",
-    image:
-      "https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    status: "single",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 15000/month",
-    image:
-      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    status: "shared",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 12000/month",
-    image:
-      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    status: "single",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 9500/month",
-    image:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=85",
-  },
-  {
-    status: "shared",
-    title: "Cozy Studio in Thamel",
-    area: "Thamel, Kathmandu",
-    price: "Rs 12000/month",
-    image:
-      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=85",
-  },
-];
+import { rooms, type Room } from "../rooms/room-data";
 
 const styles = {
   page: {
@@ -369,6 +319,9 @@ const styles = {
     fontWeight: 700,
   },
   bookButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     border: 0,
     borderRadius: 6,
     background: "#4d82de",
@@ -376,6 +329,7 @@ const styles = {
     cursor: "pointer",
     font: "800 11px Arial, Helvetica, sans-serif",
     padding: "8px 12px",
+    textDecoration: "none",
   },
   footer: {
     display: "grid",
@@ -426,11 +380,11 @@ const styles = {
   },
 } satisfies Record<string, CSSProperties>;
 
-function PropertyCard({ property }: { property: (typeof properties)[number] }) {
+function PropertyCard({ property }: { property: Room }) {
   return (
     <article style={styles.card}>
       <div style={styles.cardMedia}>
-        <img src={property.image} alt={property.title} style={styles.cardImage} />
+        <img src={property.images[0]} alt={property.title} style={styles.cardImage} />
         <span style={styles.badge}>{property.status}</span>
         <div style={styles.cardOverlay}>
           <p style={styles.area}>{property.area}</p>
@@ -440,15 +394,15 @@ function PropertyCard({ property }: { property: (typeof properties)[number] }) {
 
       <div style={styles.cardBody}>
         <div style={styles.chips}>
-          <span style={styles.chip}>WiFi</span>
-          <span style={styles.chip}>Kitchen</span>
-          <span style={styles.chip}>Laundry</span>
+          {property.facilities.map((facility) => (
+            <span style={styles.chip} key={facility}>{facility}</span>
+          ))}
         </div>
         <div style={styles.priceRow}>
           <span>{property.price}</span>
-          <button type="button" style={styles.bookButton}>
+          <Link href={`/rooms/${property.id}`} style={styles.bookButton}>
             Book Now
-          </button>
+          </Link>
         </div>
       </div>
     </article>
@@ -544,7 +498,7 @@ export default function DashboardPage() {
             </div>
 
             <div style={styles.cardGrid}>
-              {properties.map((property, index) => (
+              {rooms.map((property, index) => (
                 <PropertyCard property={property} key={`${property.price}-${index}`} />
               ))}
             </div>

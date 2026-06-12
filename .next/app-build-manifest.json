@@ -20,6 +20,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(protected)/dashboard/page.js"
     ],
+    "/(protected)/rooms/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(protected)/rooms/[id]/page.js"
+    ],
     "/(protected)/notifications/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
