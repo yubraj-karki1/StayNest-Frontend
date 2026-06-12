@@ -12,16 +12,10 @@
 
    ▲ Next.js 15.5.19
    - Local:        http://localhost:3000
-   - Network:      http://192.168.1.80:3000
+   - Network:      http://192.168.198.1:3000
 
  ✓ Starting...
- ✓ Ready in 1599ms
- ○ Compiling / ...
- ✓ Compiled / in 2.2s (579 modules)
- GET / 200 in 2509ms
- GET / 200 in 355ms
+ ✓ Ready in 1865ms
  ○ Compiling /rooms/[id] ...
- ✓ Compiled /rooms/[id] in 1228ms (624 modules)
- GET /rooms/3 200 in 832ms
- GET /rooms/3 200 in 697ms
- GET /rooms/1 200 in 102ms
+ ✓ Compiled /rooms/[id] in 2.2s (648 modules)
+ GET /rooms/1 200 in 3190ms

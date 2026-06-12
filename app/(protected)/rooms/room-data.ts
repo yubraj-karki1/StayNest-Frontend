@@ -8,6 +8,7 @@ export const rooms = [
     rating: "4.7",
     reviews: 18,
     owner: "Rajesh Khanal",
+    ownerPhone: "+9779800000001",
     facilities: ["WiFi", "Kitchen", "Attached Bathroom"],
     description:
       "A bright private studio in the heart of Thamel. It includes a comfortable bed, study corner, private bathroom, and compact kitchen, making it ideal for a student or young professional.",
@@ -27,6 +28,7 @@ export const rooms = [
     rating: "4.5",
     reviews: 12,
     owner: "Suman Shrestha",
+    ownerPhone: "+9779800000002",
     facilities: ["WiFi", "Parking", "Laundry"],
     description:
       "A spacious shared room close to colleges, public transport, and daily essentials. The room has two separate beds, generous storage, a shared lounge, and weekly cleaning.",
@@ -46,6 +48,7 @@ export const rooms = [
     rating: "4.9",
     reviews: 27,
     owner: "Anil Maharjan",
+    ownerPhone: "+9779800000003",
     facilities: ["WiFi", "Kitchen", "Parking"],
     description:
       "A premium furnished single room within walking distance of the university. It offers a dedicated workspace, modern kitchen access, secure parking, and a quiet residential setting.",
@@ -65,6 +68,7 @@ export const rooms = [
     rating: "4.6",
     reviews: 15,
     owner: "Nabin Karki",
+    ownerPhone: "+9779800000004",
     facilities: ["WiFi", "Kitchen", "Balcony"],
     description:
       "A sunny shared flat with a balcony and open living area. Residents share a fully equipped kitchen and bathroom, with cafes, buses, and supermarkets just a short walk away.",
@@ -84,6 +88,7 @@ export const rooms = [
     rating: "4.4",
     reviews: 9,
     owner: "Mina Tamang",
+    ownerPhone: "+9779800000005",
     facilities: ["WiFi", "Laundry", "Attached Bathroom"],
     description:
       "A peaceful single room in a family home near Patan Dhoka. The room includes a private bathroom, wardrobe, desk, reliable WiFi, and access to laundry facilities.",
@@ -103,6 +108,7 @@ export const rooms = [
     rating: "4.8",
     reviews: 21,
     owner: "Prakash Joshi",
+    ownerPhone: "+9779800000006",
     facilities: ["WiFi", "Parking", "Kitchen"],
     description:
       "A fully furnished shared room in a secure building near Suryabinayak. It includes comfortable furniture, kitchen access, parking, strong WiFi, and excellent road connections.",

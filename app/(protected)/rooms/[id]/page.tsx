@@ -8,7 +8,6 @@ import {
   Car,
   Heart,
   Home,
-  LogOut,
   MapPin,
   Phone,
   CookingPot,
@@ -17,6 +16,8 @@ import {
   User,
   Wifi,
 } from "lucide-react";
+import LogoutButton from "../../../_components/logout-button";
+import SaveRoomButton from "../../../_components/save-room-button";
 import { getRoomById, rooms } from "../room-data";
 
 const styles = {
@@ -324,22 +325,19 @@ export default async function RoomDetailsPage({
         </Link>
 
         <div style={styles.navActions}>
-          <a href="#" style={styles.navLink}>
+          <Link href="/saved" style={styles.navLink}>
             <Heart size={13} aria-hidden="true" />
             <span>Saved</span>
-          </a>
-          <a href="#" style={styles.navLink}>
+          </Link>
+          <Link href="/profile" style={styles.navLink}>
             <User size={13} aria-hidden="true" />
             <span>Profile</span>
-          </a>
+          </Link>
           <Link href="/notifications" style={styles.notification} aria-label="Notifications">
             <Bell size={15} aria-hidden="true" />
             <span style={styles.dot} />
           </Link>
-          <Link href="/login" style={styles.navLink}>
-            <LogOut size={13} aria-hidden="true" />
-            <span>Logout</span>
-          </Link>
+          <LogoutButton iconSize={13} style={styles.navLink} />
         </div>
       </nav>
 
@@ -407,14 +405,14 @@ export default async function RoomDetailsPage({
               </span>
             </div>
 
-            <button type="button" style={styles.callButton}>
+            <a
+              href={`tel:${room.ownerPhone}`}
+              style={{ ...styles.callButton, textDecoration: "none" }}
+            >
               <Phone size={16} aria-hidden="true" />
               Call Owner
-            </button>
-            <button type="button" style={styles.saveButton}>
-              <Heart size={15} color="#e2505e" aria-hidden="true" />
-              Saved Room
-            </button>
+            </a>
+            <SaveRoomButton roomId={room.id} style={styles.saveButton} />
           </aside>
         </div>
       </section>
@@ -429,21 +427,21 @@ export default async function RoomDetailsPage({
         </section>
         <section>
           <h3 style={styles.footerHeading}>Support</h3>
-          <a href="#" style={styles.footerLink}>Help Center</a>
-          <a href="#" style={styles.footerLink}>Contact Support</a>
-          <a href="#" style={styles.footerLink}>Safety Guide</a>
+          <a href="mailto:support@staynest.com?subject=Help Center" style={styles.footerLink}>Help Center</a>
+          <a href="mailto:support@staynest.com" style={styles.footerLink}>Contact Support</a>
+          <a href="mailto:safety@staynest.com" style={styles.footerLink}>Safety Guide</a>
         </section>
         <section>
           <h3 style={styles.footerHeading}>Company Us</h3>
-          <a href="#" style={styles.footerLink}>About Us</a>
-          <a href="#" style={styles.footerLink}>Contact Us</a>
-          <a href="#" style={styles.footerLink}>Partner with Us</a>
+          <Link href="/" style={styles.footerLink}>About Us</Link>
+          <a href="mailto:hello@staynest.com" style={styles.footerLink}>Contact Us</a>
+          <a href="mailto:partners@staynest.com" style={styles.footerLink}>Partner with Us</a>
         </section>
         <section>
           <h3 style={styles.footerHeading}>Legal</h3>
-          <a href="#" style={styles.footerLink}>Terms of Services</a>
-          <a href="#" style={styles.footerLink}>Cookies</a>
-          <a href="#" style={styles.footerLink}>Privacy policy</a>
+          <Link href="/legal#terms" style={styles.footerLink}>Terms of Services</Link>
+          <Link href="/legal#cookies" style={styles.footerLink}>Cookies</Link>
+          <Link href="/legal#privacy" style={styles.footerLink}>Privacy policy</Link>
         </section>
       </footer>
     </main>

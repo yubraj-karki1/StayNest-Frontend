@@ -1,15 +1,40 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FormEvent,
+} from "react";
 import Link from "next/link";
 import {
   Bell,
   ChevronDown,
+  Heart,
   Home,
-  LogOut,
   MapPin,
   Search,
   User,
 } from "lucide-react";
+import LogoutButton from "../../_components/logout-button";
+import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { rooms, type Room } from "../rooms/room-data";
+
+const MAX_PRICE = 50000;
+const roomTypes = [
+  { value: "single", label: "Single Room" },
+  { value: "shared", label: "Shared Room" },
+  { value: "hostel", label: "Hostel" },
+] as const;
+
+type RoomType = (typeof roomTypes)[number]["value"];
+type SortOption = "newest" | "price-low" | "price-high" | "rating";
+
+function getNumericPrice(price: string) {
+  return Number(price.replace(/\D/g, ""));
+}
 
 const styles = {
   page: {
@@ -152,18 +177,25 @@ const styles = {
     cursor: "pointer",
     font: "800 17px Arial, Helvetica, sans-serif",
   },
-  content: {
-    display: "grid",
-    gridTemplateColumns: "260px minmax(0, 1fr)",
-    gap: 42,
-    width: "min(1180px, calc(100% - 56px))",
-    margin: "0 auto",
-    padding: "0 0 112px",
-  },
   filterTitle: {
-    margin: "0 0 18px",
+    margin: 0,
     fontSize: 18,
     fontWeight: 800,
+  },
+  filterHeading: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    marginBottom: 18,
+  },
+  clearButton: {
+    border: 0,
+    background: "transparent",
+    color: "#4d82de",
+    cursor: "pointer",
+    font: "700 12px Arial, Helvetica, sans-serif",
+    padding: 0,
   },
   filterCard: {
     borderRadius: 14,
@@ -180,19 +212,6 @@ const styles = {
     letterSpacing: 1.1,
     textTransform: "uppercase",
   },
-  sliderTrack: {
-    height: 4,
-    borderRadius: 999,
-    background: "#e4e6e2",
-  },
-  sliderThumb: {
-    width: 20,
-    height: 20,
-    marginTop: -12,
-    borderRadius: 999,
-    background: "#ffffff",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-  },
   rangeRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -207,13 +226,6 @@ const styles = {
     marginTop: 12,
     fontSize: 13,
     fontWeight: 700,
-  },
-  listingHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 18,
-    margin: "0 0 24px",
   },
   sectionTitle: {
     margin: 0,
@@ -232,15 +244,45 @@ const styles = {
     font: "800 12px Arial, Helvetica, sans-serif",
     padding: "0 16px",
   },
+  sortSelect: {
+    border: 0,
+    background: "transparent",
+    color: "#d76342",
+    cursor: "pointer",
+    font: "800 12px Arial, Helvetica, sans-serif",
+    outline: "none",
+  },
   sortAccent: {
     color: "#d76342",
   },
-  cardGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-    gap: 24,
+  resultCount: {
+    margin: "6px 0 0",
+    color: "#6c736d",
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  emptyState: {
+    gridColumn: "1 / -1",
+    borderRadius: 14,
+    background: "rgba(255, 255, 255, 0.88)",
+    color: "#555c56",
+    padding: "48px 24px",
+    textAlign: "center",
+  },
+  emptyTitle: {
+    margin: "0 0 8px",
+    color: "#202520",
+    fontSize: 20,
+  },
+  emptyCopy: {
+    margin: 0,
+    fontSize: 14,
   },
   card: {
+    display: "flex",
+    minWidth: 0,
+    height: "100%",
+    flexDirection: "column",
     overflow: "hidden",
     borderRadius: 14,
     background: "#ffffff",
@@ -268,6 +310,22 @@ const styles = {
     padding: "6px 12px",
     textTransform: "uppercase",
   },
+  cardSaveButton: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    zIndex: 1,
+    display: "grid",
+    placeItems: "center",
+    width: 34,
+    height: 34,
+    border: 0,
+    borderRadius: "50%",
+    background: "#ffffff",
+    color: "#4f5650",
+    cursor: "pointer",
+    boxShadow: "0 5px 18px rgba(0, 0, 0, 0.18)",
+  },
   cardOverlay: {
     position: "absolute",
     right: 0,
@@ -292,12 +350,17 @@ const styles = {
     lineHeight: 1.1,
   },
   cardBody: {
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
     padding: "14px 16px 16px",
   },
   chips: {
     display: "flex",
+    alignContent: "flex-start",
     gap: 7,
     flexWrap: "wrap",
+    minHeight: 54,
     marginBottom: 16,
   },
   chip: {
@@ -314,9 +377,19 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
+    marginTop: "auto",
     color: "#6c736d",
     fontSize: 13,
     fontWeight: 700,
+  },
+  priceRange: {
+    width: "100%",
+    height: 5,
+    margin: "4px 0",
+    borderRadius: 999,
+    background: "#e4e6e2",
+    cursor: "pointer",
+    accentColor: "#4d82de",
   },
   bookButton: {
     display: "inline-flex",
@@ -380,12 +453,36 @@ const styles = {
   },
 } satisfies Record<string, CSSProperties>;
 
-function PropertyCard({ property }: { property: Room }) {
+function PropertyCard({
+  property,
+  isSaved,
+  onToggleSaved,
+}: {
+  property: Room;
+  isSaved: boolean;
+  onToggleSaved: () => void;
+}) {
   return (
     <article style={styles.card}>
       <div style={styles.cardMedia}>
         <img src={property.images[0]} alt={property.title} style={styles.cardImage} />
         <span style={styles.badge}>{property.status}</span>
+        <button
+          type="button"
+          style={{
+            ...styles.cardSaveButton,
+            color: isSaved ? "#e2505e" : "#4f5650",
+          }}
+          onClick={onToggleSaved}
+          aria-label={`${isSaved ? "Remove" : "Save"} ${property.title}`}
+          aria-pressed={isSaved}
+        >
+          <Heart
+            size={17}
+            fill={isSaved ? "#e2505e" : "none"}
+            aria-hidden="true"
+          />
+        </button>
         <div style={styles.cardOverlay}>
           <p style={styles.area}>{property.area}</p>
           <h3 style={styles.cardTitle}>{property.title}</h3>
@@ -410,6 +507,165 @@ function PropertyCard({ property }: { property: Room }) {
 }
 
 export default function DashboardPage() {
+  const [viewportWidth, setViewportWidth] = useState(1200);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
+  const [selectedRoomTypes, setSelectedRoomTypes] = useState<RoomType[]>([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const { savedRoomIds, toggleSavedRoom } = useSavedRooms();
+  const listingsRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
+    updateViewportWidth();
+    window.addEventListener("resize", updateViewportWidth);
+
+    const params = new URLSearchParams(window.location.search);
+    const location = params.get("location")?.trim() ?? "";
+    const price = params.get("price");
+
+    if (location) {
+      setSearchInput(location);
+      setSearchQuery(location);
+    }
+
+    if (price === "low") setMaxPrice(8000);
+    if (price === "mid") {
+      setMinPrice(8000);
+      setMaxPrice(15000);
+    }
+    if (price === "high") setMinPrice(15000);
+
+    return () => window.removeEventListener("resize", updateViewportWidth);
+  }, []);
+
+  const isMobile = viewportWidth <= 720;
+  const isCompactMobile = viewportWidth <= 520;
+  const isTablet = viewportWidth <= 1080;
+  const contentStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isMobile
+      ? "1fr"
+      : isTablet
+        ? "230px minmax(0, 1fr)"
+        : "260px minmax(0, 1fr)",
+    alignItems: "start",
+    gap: isMobile ? 28 : isTablet ? 28 : 42,
+    width: isMobile
+      ? "min(calc(100% - 28px), 560px)"
+      : isTablet
+        ? "min(920px, calc(100% - 40px))"
+        : "min(1240px, calc(100% - 56px))",
+    margin: "0 auto",
+    padding: isMobile ? "0 0 112px" : "12px 0 112px",
+  };
+  const filtersStyle: CSSProperties = {
+    position: isMobile ? "static" : "sticky",
+    top: isMobile ? undefined : 24,
+  };
+  const listingsStyle: CSSProperties = {
+    minWidth: 0,
+  };
+  const listingHeaderStyle: CSSProperties = {
+    display: "flex",
+    alignItems: isMobile ? "flex-start" : "center",
+    justifyContent: "space-between",
+    flexDirection: isMobile ? "column" : "row",
+    gap: 18,
+    marginBottom: 24,
+  };
+  const cardGridStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isMobile
+      ? "1fr"
+      : isTablet
+        ? "repeat(2, minmax(0, 1fr))"
+        : "repeat(3, minmax(0, 1fr))",
+    alignItems: "stretch",
+    gap: "28px 24px",
+  };
+  const responsiveSortStyle: CSSProperties = {
+    ...styles.sortButton,
+    width: isCompactMobile ? "100%" : undefined,
+    justifyContent: isCompactMobile ? "space-between" : undefined,
+  };
+
+  const filteredRooms = useMemo(
+    () => {
+      const normalizedQuery = searchQuery.trim().toLowerCase();
+      const matchingRooms = rooms.filter((room) => {
+        const roomPrice = getNumericPrice(room.price);
+        const matchesPrice = roomPrice >= minPrice && roomPrice <= maxPrice;
+        const matchesRoomType =
+          selectedRoomTypes.length === 0 ||
+          selectedRoomTypes.includes(room.status as RoomType);
+        const searchableText = [
+          room.title,
+          room.area,
+          room.status,
+          ...room.facilities,
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchesSearch =
+          normalizedQuery.length === 0 || searchableText.includes(normalizedQuery);
+
+        return matchesPrice && matchesRoomType && matchesSearch;
+      });
+
+      return [...matchingRooms].sort((firstRoom, secondRoom) => {
+        if (sortOption === "price-low") {
+          return getNumericPrice(firstRoom.price) - getNumericPrice(secondRoom.price);
+        }
+        if (sortOption === "price-high") {
+          return getNumericPrice(secondRoom.price) - getNumericPrice(firstRoom.price);
+        }
+        if (sortOption === "rating") {
+          return Number(secondRoom.rating) - Number(firstRoom.rating);
+        }
+        return secondRoom.id - firstRoom.id;
+      });
+    },
+    [maxPrice, minPrice, searchQuery, selectedRoomTypes, sortOption],
+  );
+
+  const toggleRoomType = (roomType: RoomType) => {
+    setSelectedRoomTypes((current) =>
+      current.includes(roomType)
+        ? current.filter((type) => type !== roomType)
+        : [...current, roomType],
+    );
+  };
+
+  const clearFilters = () => {
+    setMinPrice(0);
+    setMaxPrice(MAX_PRICE);
+    setSelectedRoomTypes([]);
+    setSearchInput("");
+    setSearchQuery("");
+    setSortOption("newest");
+  };
+
+  const filtersAreActive =
+    minPrice !== 0 ||
+    maxPrice !== MAX_PRICE ||
+    selectedRoomTypes.length > 0 ||
+    searchQuery.length > 0 ||
+    sortOption !== "newest";
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearchQuery(searchInput.trim());
+    listingsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const exploreAllProperties = () => {
+    clearFilters();
+    listingsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <main style={styles.page}>
       <section style={styles.heroWrap}>
@@ -420,18 +676,19 @@ export default function DashboardPage() {
           </Link>
 
           <div style={styles.navActions}>
-            <a href="#" style={styles.navLink}>
+            <Link href="/saved" style={styles.navLink}>
+              <Heart size={12} aria-hidden="true" />
+              <span>Saved</span>
+            </Link>
+            <Link href="/profile" style={styles.navLink}>
               <User size={12} aria-hidden="true" />
               <span>Profile</span>
-            </a>
+            </Link>
             <Link href="/notifications" style={styles.notification} aria-label="Notifications">
               <Bell size={12} aria-hidden="true" />
               <span style={styles.dot} />
             </Link>
-            <Link href="/login" style={styles.navLink}>
-              <LogOut size={11} aria-hidden="true" />
-              <span>Logout</span>
-            </Link>
+            <LogoutButton iconSize={11} style={styles.navLink} />
           </div>
         </nav>
 
@@ -443,64 +700,126 @@ export default function DashboardPage() {
             Book securely with confidence.
           </p>
 
-          <form style={styles.searchBox}>
+          <form style={styles.searchBox} onSubmit={handleSearch}>
             <label style={styles.searchField}>
               <MapPin size={16} strokeWidth={2.1} aria-hidden="true" />
-              <input type="text" placeholder="City or area..." style={styles.searchInput} />
+              <input
+                type="search"
+                placeholder="City, area, facility..."
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                style={styles.searchInput}
+              />
             </label>
-            <button type="button" style={styles.searchButton}>
+            <button type="submit" style={styles.searchButton}>
               <Search size={18} strokeWidth={2.2} aria-hidden="true" />
               <span>Search</span>
             </button>
           </form>
 
-          <button type="button" style={styles.exploreButton}>
+          <button
+            type="button"
+            style={styles.exploreButton}
+            onClick={exploreAllProperties}
+          >
             Explore all Properties
           </button>
         </section>
 
-        <section style={styles.content}>
-          <aside>
-            <h2 style={styles.filterTitle}>Filters</h2>
+        <section style={contentStyle}>
+          <aside style={filtersStyle}>
+            <div style={styles.filterHeading}>
+              <h2 style={styles.filterTitle}>Filters</h2>
+              {filtersAreActive && (
+                <button
+                  type="button"
+                  style={styles.clearButton}
+                  onClick={clearFilters}
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
             <div style={styles.filterCard}>
-              <span style={styles.filterLabel}>Price Range</span>
-              <div style={styles.sliderTrack} />
-              <div style={styles.sliderThumb} />
+              <label htmlFor="maximum-price" style={styles.filterLabel}>
+                Maximum Price
+              </label>
+              <input
+                id="maximum-price"
+                type="range"
+                min="0"
+                max={MAX_PRICE}
+                step="500"
+                value={maxPrice}
+                onChange={(event) => setMaxPrice(Number(event.target.value))}
+                aria-valuetext={`Rs. ${maxPrice.toLocaleString()}`}
+                style={styles.priceRange}
+              />
               <div style={styles.rangeRow}>
-                <span>Rs. 0</span>
-                <span>Rs. 50,000+</span>
+                <span>Rs. {minPrice.toLocaleString()}</span>
+                <span>Up to Rs. {maxPrice.toLocaleString()}</span>
               </div>
 
               <span style={styles.filterLabel}>Room Type</span>
-              <label style={styles.checkboxLabel}>
-                <input type="checkbox" defaultChecked />
-                <span>Single Room</span>
-              </label>
-              <label style={styles.checkboxLabel}>
-                <input type="checkbox" />
-                <span>Shared Room</span>
-              </label>
-              <label style={styles.checkboxLabel}>
-                <input type="checkbox" />
-                <span>Hostel</span>
-              </label>
+              {roomTypes.map((roomType) => (
+                <label style={styles.checkboxLabel} key={roomType.value}>
+                  <input
+                    type="checkbox"
+                    checked={selectedRoomTypes.includes(roomType.value)}
+                    onChange={() => toggleRoomType(roomType.value)}
+                  />
+                  <span>{roomType.label}</span>
+                </label>
+              ))}
             </div>
           </aside>
 
-          <section>
-            <div style={styles.listingHeader}>
-              <h2 style={styles.sectionTitle}>Features Properties</h2>
-              <button type="button" style={styles.sortButton}>
+          <section style={listingsStyle} ref={listingsRef}>
+            <div style={listingHeaderStyle}>
+              <div>
+                <h2 style={styles.sectionTitle}>Featured Properties</h2>
+                <p style={styles.resultCount}>
+                  {filteredRooms.length}{" "}
+                  {filteredRooms.length === 1 ? "property" : "properties"} found
+                </p>
+              </div>
+              <label style={responsiveSortStyle}>
                 <span>Sort by:</span>
-                <span style={styles.sortAccent}>Newest first</span>
+                <select
+                  value={sortOption}
+                  onChange={(event) =>
+                    setSortOption(event.target.value as SortOption)
+                  }
+                  style={styles.sortSelect}
+                  aria-label="Sort properties"
+                >
+                  <option value="newest">Newest first</option>
+                  <option value="price-low">Price: low to high</option>
+                  <option value="price-high">Price: high to low</option>
+                  <option value="rating">Highest rated</option>
+                </select>
                 <ChevronDown size={10} aria-hidden="true" />
-              </button>
+              </label>
             </div>
 
-            <div style={styles.cardGrid}>
-              {rooms.map((property, index) => (
-                <PropertyCard property={property} key={`${property.price}-${index}`} />
-              ))}
+            <div style={cardGridStyle}>
+              {filteredRooms.length > 0 ? (
+                filteredRooms.map((property) => (
+                  <PropertyCard
+                    property={property}
+                    isSaved={savedRoomIds.includes(property.id)}
+                    onToggleSaved={() => toggleSavedRoom(property.id)}
+                    key={property.id}
+                  />
+                ))
+              ) : (
+                <div style={styles.emptyState}>
+                  <h3 style={styles.emptyTitle}>No properties found</h3>
+                  <p style={styles.emptyCopy}>
+                    Try increasing the price or selecting a different room type.
+                  </p>
+                </div>
+              )}
             </div>
           </section>
         </section>
@@ -523,41 +842,41 @@ export default function DashboardPage() {
 
         <section>
           <h3 style={styles.footerHeading}>Support</h3>
-          <a href="#" style={styles.footerLink}>
+          <a href="mailto:support@staynest.com?subject=Help Center" style={styles.footerLink}>
             Help Center
           </a>
-          <a href="#" style={styles.footerLink}>
+          <a href="mailto:support@staynest.com" style={styles.footerLink}>
             Contact Support
           </a>
-          <a href="#" style={styles.footerLink}>
+          <a href="mailto:safety@staynest.com" style={styles.footerLink}>
             Safety Guide
           </a>
         </section>
 
         <section>
           <h3 style={styles.footerHeading}>Company Us</h3>
-          <a href="#" style={styles.footerLink}>
+          <Link href="/profile" style={styles.footerLink}>
             About Us
-          </a>
-          <a href="#" style={styles.footerLink}>
+          </Link>
+          <a href="mailto:hello@staynest.com" style={styles.footerLink}>
             Contacts Us
           </a>
-          <a href="#" style={styles.footerLink}>
+          <a href="mailto:partners@staynest.com" style={styles.footerLink}>
             Partner with Us
           </a>
         </section>
 
         <section>
           <h3 style={styles.footerHeading}>Legal</h3>
-          <a href="#" style={styles.footerLink}>
+          <Link href="/legal#terms" style={styles.footerLink}>
             Terms of Services
-          </a>
-          <a href="#" style={styles.footerLink}>
+          </Link>
+          <Link href="/legal#cookies" style={styles.footerLink}>
             Cookies
-          </a>
-          <a href="#" style={styles.footerLink}>
+          </Link>
+          <Link href="/legal#privacy" style={styles.footerLink}>
             Privacy policy
-          </a>
+          </Link>
         </section>
       </footer>
     </main>

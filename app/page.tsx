@@ -1,5 +1,8 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useState, type CSSProperties, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const styles = {
   page: {
@@ -296,6 +299,19 @@ function SearchIcon() {
 }
 
 export default function Page() {
+  const router = useRouter();
+  const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("any");
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const params = new URLSearchParams();
+    if (location.trim()) params.set("location", location.trim());
+    if (price !== "any") params.set("price", price);
+    const query = params.toString();
+    router.push(query ? `/dashboard?${query}` : "/dashboard");
+  };
+
   return (
     <main style={styles.page}>
       <nav style={styles.navbar}>
@@ -305,17 +321,17 @@ export default function Page() {
         </Link>
 
         <div style={styles.navActions}>
-          <a href="#" style={styles.navLink}>
+          <Link href="/saved" style={styles.navLink}>
             <HeartIcon />
             <span>Saved</span>
-          </a>
-          <a href="#" style={styles.navLink}>
+          </Link>
+          <Link href="/profile" style={styles.navLink}>
             <UserIcon />
             <span>Profile</span>
-          </a>
-          <button type="button" style={styles.iconButton} aria-label="Notifications">
+          </Link>
+          <Link href="/notifications" style={styles.iconButton} aria-label="Notifications">
             <BellIcon />
-          </button>
+          </Link>
           <Link href="/login" style={styles.signInButton}>
             Sign In
           </Link>
@@ -334,24 +350,31 @@ export default function Page() {
             prices, check facilities, and book with less hassle.
           </p>
 
-          <form style={styles.responsiveSearchPanel}>
+          <form style={styles.responsiveSearchPanel} onSubmit={handleSearch}>
             <label style={styles.locationField}>
               <LocationIcon />
               <input
                 type="text"
                 placeholder="Enter location or area...."
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
                 style={styles.locationInput}
               />
             </label>
 
-            <select aria-label="Price range" defaultValue="any" style={styles.select}>
+            <select
+              aria-label="Price range"
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
+              style={styles.select}
+            >
               <option value="any">Any Price</option>
               <option value="low">Under Rs. 8,000</option>
               <option value="mid">Rs. 8,000 - 15,000</option>
               <option value="high">Rs. 15,000+</option>
             </select>
 
-            <button type="button" style={styles.searchButton}>
+            <button type="submit" style={styles.searchButton}>
               <SearchIcon />
               <span>Search</span>
             </button>

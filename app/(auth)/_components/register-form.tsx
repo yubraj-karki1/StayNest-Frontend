@@ -1,8 +1,28 @@
+"use client";
+
+import type { FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, CircleHelp, Home, LockKeyhole } from "lucide-react";
 import { authStyles as styles } from "./auth-styles";
 
 export default function RegisterForm() {
+  const router = useRouter();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    window.localStorage.setItem(
+      "staynest-profile",
+      JSON.stringify({
+        name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        phone: String(formData.get("phone") ?? ""),
+      }),
+    );
+    router.push("/dashboard");
+  };
+
   return (
     <main style={styles.page}>
       <header style={styles.header}>
@@ -41,7 +61,7 @@ export default function RegisterForm() {
           </div>
         </aside>
 
-        <form style={styles.form} action="#">
+        <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.heading}>
             <p style={styles.eyebrow}>Start your stay</p>
             <h1 style={styles.title}>Create an account</h1>

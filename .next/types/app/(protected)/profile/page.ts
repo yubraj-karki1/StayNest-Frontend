@@ -1,8 +1,8 @@
-// File: C:\Users\Yubraj\Desktop\StayNest Frontend\app\(protected)\rooms\[id]\page.tsx
-import * as entry from '../../../../../../app/(protected)/rooms/[id]/page.js'
+// File: C:\Users\Yubraj\Desktop\StayNest Frontend\app\(protected)\profile\page.tsx
+import * as entry from '../../../../../app/(protected)/profile/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../../app/(protected)/rooms/[id]/page.js')
+type TEntry = typeof import('../../../../../app/(protected)/profile/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }

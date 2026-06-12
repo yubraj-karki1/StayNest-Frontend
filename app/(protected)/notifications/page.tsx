@@ -6,12 +6,13 @@ import {
   ArrowLeft,
   Bell,
   Home,
+  Heart,
   House,
-  LogOut,
   Star,
   TrendingDown,
   User,
 } from "lucide-react";
+import LogoutButton from "../../_components/logout-button";
 
 const styles = {
   page: {
@@ -237,18 +238,19 @@ export default function NotificationsPage() {
         </Link>
 
         <div style={styles.navActions}>
-          <a href="#" style={styles.navLink}>
+          <Link href="/saved" style={styles.navLink}>
+            <Heart size={14} aria-hidden="true" />
+            <span>Saved</span>
+          </Link>
+          <Link href="/profile" style={styles.navLink}>
             <User size={14} aria-hidden="true" />
             <span>Profile</span>
-          </a>
+          </Link>
           <span style={styles.activeNotification} aria-label="Notifications">
             <Bell size={17} aria-hidden="true" />
             {unreadIds.length > 0 && <span style={styles.navDot} />}
           </span>
-          <Link href="/login" style={styles.navLink}>
-            <LogOut size={14} aria-hidden="true" />
-            <span>Logout</span>
-          </Link>
+          <LogoutButton iconSize={14} style={styles.navLink} />
         </div>
       </nav>
 

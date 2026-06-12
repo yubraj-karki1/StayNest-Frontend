@@ -2,6 +2,7 @@
   "/page": "app/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(protected)/dashboard/page": "app/(protected)/dashboard/page.js",
-  "/(protected)/rooms/[id]/page": "app/(protected)/rooms/[id]/page.js",
-  "/(protected)/notifications/page": "app/(protected)/notifications/page.js"
+  "/(protected)/notifications/page": "app/(protected)/notifications/page.js",
+  "/(protected)/profile/page": "app/(protected)/profile/page.js",
+  "/(protected)/saved/page": "app/(protected)/saved/page.js"
 }
