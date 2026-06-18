@@ -26,8 +26,7 @@ import {
 } from "lucide-react";
 import LogoutButton from "../../_components/logout-button";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
-
-const PROFILE_KEY = "staynest-profile";
+import { apiRequest, type UserProfile } from "../../_lib/api";
 
 const styles = {
   page: {
@@ -496,39 +495,41 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [profileError, setProfileError] = useState("");
 
   useEffect(() => {
-    try {
-      const storedProfile = window.localStorage.getItem(PROFILE_KEY);
-      if (!storedProfile) return;
-      const profile = JSON.parse(storedProfile) as {
-        name?: string;
-        email?: string;
-        phone?: string;
-        location?: string;
-        about?: string;
-      };
-      setName(profile.name || "Alex Johnson");
-      setEmail(profile.email || "alexjohnson@gmail.com");
-      setPhone(profile.phone || "+977 98-1234-5678");
-      setLocation(profile.location || "Kathmandu, Nepal");
-      setAbout(
-        profile.about ||
-          "Passionate traveler and tech enthusiast. Always looking for unique architectural stays and local cultural experiences in the heart of the city.",
+    apiRequest<{ user: UserProfile }>("/profile")
+      .then(({ user }) => {
+        setName(user.fullName);
+        setEmail(user.email);
+        setPhone(user.contactNo);
+        setLocation(user.location);
+        setAbout(user.about);
+      })
+      .catch((error) =>
+        setProfileError(error instanceof Error ? error.message : "Unable to load profile"),
       );
-    } catch {
-      // Keep the profile defaults when browser data is invalid.
-    }
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    window.localStorage.setItem(
-      PROFILE_KEY,
-      JSON.stringify({ name, email, phone, location, about }),
-    );
-    setIsSaved(true);
-    setIsEditing(false);
+    setProfileError("");
+    try {
+      await apiRequest("/profile", {
+        method: "PUT",
+        body: JSON.stringify({
+          fullName: name,
+          email,
+          contactNo: phone,
+          location,
+          about,
+        }),
+      });
+      setIsSaved(true);
+      setIsEditing(false);
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : "Unable to save profile");
+    }
   };
 
   const shareProfile = async () => {
@@ -734,6 +735,11 @@ export default function ProfilePage() {
                 <p style={{ ...styles.success, marginTop: 18 }} role="status">
                   <CheckCircle2 size={16} aria-hidden="true" />
                   Profile saved successfully.
+                </p>
+              )}
+              {profileError && (
+                <p style={{ marginTop: 18, color: "#b83f50" }} role="alert">
+                  {profileError}
                 </p>
               )}
             </div>

@@ -98,15 +98,15 @@ export default function LegalPage() {
         <article id="cookies" style={styles.section}>
           <h2 style={styles.heading}>Cookies</h2>
           <p style={styles.copy}>
-            This demo stores preferences such as saved rooms and profile details
-            in browser storage so they remain available after a refresh.
+            StayNest stores an authentication token in browser storage so your
+            session remains available after a refresh.
           </p>
         </article>
         <article id="privacy" style={styles.section}>
           <h2 style={styles.heading}>Privacy Policy</h2>
           <p style={styles.copy}>
-            Profile and saved-room data currently remain on your device. Contact
-            support@staynest.com for privacy questions.
+            Profile, saved-room, notification, and booking data are stored by
+            the StayNest API. Contact support@staynest.com for privacy questions.
           </p>
         </article>
       </section>

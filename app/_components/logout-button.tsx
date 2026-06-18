@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import { clearToken } from "../_lib/api";
 
 type LogoutButtonProps = {
   iconSize?: number;
@@ -132,7 +133,10 @@ export default function LogoutButton({
                   cursor: "pointer",
                   font: "700 14px Arial, Helvetica, sans-serif",
                 }}
-                onClick={() => router.push("/login")}
+                onClick={() => {
+                  clearToken();
+                  router.push("/login");
+                }}
               >
                 Yes, logout
               </button>

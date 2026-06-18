@@ -1,17 +1,37 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CircleHelp, Home, LockKeyhole } from "lucide-react";
 import { authStyles as styles } from "./auth-styles";
+import { apiRequest, setToken } from "../../_lib/api";
 
 export default function LoginForm() {
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.push("/dashboard");
+    const formData = new FormData(event.currentTarget);
+    setError("");
+    setIsSubmitting(true);
+    try {
+      const result = await apiRequest<{ token: string }>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
+      setToken(result.token);
+      router.push("/dashboard");
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Login failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -100,8 +120,9 @@ export default function LoginForm() {
             </a>
           </div>
 
-          <button type="submit" style={styles.submitButton}>
-            Log in
+          {error && <p style={{ margin: 0, color: "#b83f50" }}>{error}</p>}
+          <button type="submit" style={styles.submitButton} disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Log in"}
             <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
           </button>
 

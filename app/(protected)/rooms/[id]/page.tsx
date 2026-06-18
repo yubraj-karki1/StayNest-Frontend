@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import LogoutButton from "../../../_components/logout-button";
 import SaveRoomButton from "../../../_components/save-room-button";
+import RequestBookingButton from "../../../_components/request-booking-button";
 import { getRoomById, rooms } from "../room-data";
 
 const styles = {
@@ -405,9 +406,18 @@ export default async function RoomDetailsPage({
               </span>
             </div>
 
+            <RequestBookingButton roomId={room.id} style={styles.callButton} />
             <a
               href={`tel:${room.ownerPhone}`}
-              style={{ ...styles.callButton, textDecoration: "none" }}
+              style={{
+                ...styles.callButton,
+                boxSizing: "border-box",
+                marginTop: 10,
+                border: "1px solid #477bd5",
+                background: "#ffffff",
+                color: "#477bd5",
+                textDecoration: "none",
+              }}
             >
               <Phone size={16} aria-hidden="true" />
               Call Owner

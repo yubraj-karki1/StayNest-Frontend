@@ -1,26 +1,40 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CircleHelp, Home, LockKeyhole } from "lucide-react";
 import { authStyles as styles } from "./auth-styles";
+import { apiRequest } from "../../_lib/api";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    window.localStorage.setItem(
-      "staynest-profile",
-      JSON.stringify({
-        name: String(formData.get("name") ?? ""),
-        email: String(formData.get("email") ?? ""),
-        phone: String(formData.get("phone") ?? ""),
-      }),
-    );
-    router.push("/dashboard");
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          fullName: formData.get("name"),
+          contactNo: formData.get("phone"),
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
+      router.push("/login");
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error ? requestError.message : "Registration failed",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,8 +138,9 @@ export default function RegisterForm() {
             <span>I agree to the terms and conditions.</span>
           </label>
 
-          <button type="submit" style={styles.submitButton}>
-            Create account
+          {error && <p style={{ margin: 0, color: "#b83f50" }}>{error}</p>}
+          <button type="submit" style={styles.submitButton} disabled={isSubmitting}>
+            {isSubmitting ? "Creating account..." : "Create account"}
             <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
           </button>
 

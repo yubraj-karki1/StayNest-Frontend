@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -13,6 +13,7 @@ import {
   User,
 } from "lucide-react";
 import LogoutButton from "../../_components/logout-button";
+import { apiRequest } from "../../_lib/api";
 
 const styles = {
   page: {
@@ -196,37 +197,50 @@ const styles = {
   },
 } satisfies Record<string, CSSProperties>;
 
-const initialNotifications = [
-  {
-    id: 1,
-    title: "New Room in Thamel",
-    message: "A studio matching your filters was just listed.",
-    time: "2M AGO",
-    icon: House,
-  },
-  {
-    id: 2,
-    title: "Price dropped",
-    message: "Kupondole 1 BHK is now RS. 12,000 / month (was 14,000)",
-    time: "2H AGO",
-    icon: TrendingDown,
-  },
-  {
-    id: 3,
-    title: "New Review",
-    message: "Your saved room received a new five-star review.",
-    time: "1D AGO",
-    icon: Star,
-  },
-];
+type Notification = {
+  id: string;
+  title: string;
+  message: string;
+  type: "room" | "price" | "review" | "booking";
+  read: boolean;
+  createdAt: string;
+};
+
+const notificationIcons = {
+  room: House,
+  price: TrendingDown,
+  review: Star,
+  booking: Home,
+};
 
 export default function NotificationsPage() {
-  const [unreadIds, setUnreadIds] = useState(() =>
-    initialNotifications.map((notification) => notification.id),
-  );
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const unreadIds = notifications
+    .filter((notification) => !notification.read)
+    .map((notification) => notification.id);
 
-  const markAsRead = (id: number) => {
-    setUnreadIds((current) => current.filter((unreadId) => unreadId !== id));
+  useEffect(() => {
+    apiRequest<{ notifications: Notification[] }>("/notifications")
+      .then(({ notifications: items }) => setNotifications(items))
+      .catch(() => setNotifications([]));
+  }, []);
+
+  const markAsRead = async (id: string) => {
+    setNotifications((current) =>
+      current.map((item) => (item.id === id ? { ...item, read: true } : item)),
+    );
+    await apiRequest(`/notifications/${id}/read`, { method: "PATCH" }).catch(
+      () => undefined,
+    );
+  };
+
+  const markAllAsRead = async () => {
+    setNotifications((current) =>
+      current.map((item) => ({ ...item, read: true })),
+    );
+    await apiRequest("/notifications/read-all", { method: "POST" }).catch(
+      () => undefined,
+    );
   };
 
   return (
@@ -273,7 +287,7 @@ export default function NotificationsPage() {
                 color: unreadIds.length > 0 ? "#6b91eb" : "#a0a3aa",
                 cursor: unreadIds.length > 0 ? "pointer" : "default",
               }}
-              onClick={() => setUnreadIds([])}
+              onClick={markAllAsRead}
               disabled={unreadIds.length === 0}
             >
               {unreadIds.length > 0 ? "Mark all as read" : "All caught up"}
@@ -281,8 +295,8 @@ export default function NotificationsPage() {
           </header>
 
           <div style={styles.list}>
-            {initialNotifications.map((notification) => {
-              const Icon = notification.icon;
+            {notifications.map((notification) => {
+              const Icon = notificationIcons[notification.type];
               const isUnread = unreadIds.includes(notification.id);
 
               return (
@@ -299,7 +313,9 @@ export default function NotificationsPage() {
                   <span style={styles.notificationBody}>
                     <strong style={styles.notificationTitle}>{notification.title}</strong>
                     <span style={styles.message}>{notification.message}</span>
-                    <span style={styles.time}>{notification.time}</span>
+                    <span style={styles.time}>
+                      {new Date(notification.createdAt).toLocaleString()}
+                    </span>
                   </span>
                   {isUnread && <span style={styles.unreadDot} />}
                 </button>

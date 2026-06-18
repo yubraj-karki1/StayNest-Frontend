@@ -15,7 +15,14 @@
    - Network:      http://192.168.198.1:3000
 
  ✓ Starting...
- ✓ Ready in 1865ms
- ○ Compiling /rooms/[id] ...
- ✓ Compiled /rooms/[id] in 2.2s (648 modules)
- GET /rooms/1 200 in 3190ms
+ ✓ Ready in 1498ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 3.3s (521 modules)
+ GET /src/routes/leagues.tsx?tsr-split=component 404 in 3705ms
+ GET /src/routes/prediction.tsx?t=1781453191613&tsr-split=component 404 in 3444ms
+ GET /src/routes/corners.tsx?tsr-split=component 404 in 3519ms
+ GET /src/routes/heatmaps.tsx?tsr-split=component 404 in 3644ms
+ GET /src/routes/players.tsx?tsr-split=component 404 in 75ms
+ GET /leagues 404 in 74ms
+ GET /leagues 404 in 37ms
+ GET /players 404 in 40ms

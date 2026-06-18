@@ -1,8 +1,8 @@
 {
   "/page": "app/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/legal/page": "app/legal/page.js",
   "/(protected)/dashboard/page": "app/(protected)/dashboard/page.js",
-  "/(protected)/notifications/page": "app/(protected)/notifications/page.js",
-  "/(protected)/profile/page": "app/(protected)/profile/page.js",
-  "/(protected)/saved/page": "app/(protected)/saved/page.js"
+  "/(protected)/saved/page": "app/(protected)/saved/page.js",
+  "/(protected)/profile/page": "app/(protected)/profile/page.js"
 }
