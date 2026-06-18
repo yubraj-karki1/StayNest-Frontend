@@ -1,302 +1,10 @@
 "use client";
 
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    overflow: "hidden",
-    background: "#e3e7e5",
-    color: "#111111",
-    fontFamily: "Arial, Helvetica, sans-serif",
-  },
-  navbar: {
-    position: "relative",
-    zIndex: 2,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 14,
-    minHeight: 82,
-    padding: "18px clamp(22px, 4vw, 46px)",
-  },
-  logo: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    color: "inherit",
-    textDecoration: "none",
-  },
-  logoText: {
-    fontSize: 27,
-    fontWeight: 800,
-    lineHeight: 1,
-  },
-  navActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: "clamp(12px, 2vw, 22px)",
-  },
-  navLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    color: "#000000",
-    fontSize: 15,
-    fontWeight: 800,
-    lineHeight: 1,
-    textDecoration: "none",
-  },
-  iconButton: {
-    display: "grid",
-    placeItems: "center",
-    width: 26,
-    height: 26,
-    border: 0,
-    background: "transparent",
-    color: "#000000",
-    cursor: "pointer",
-    padding: 0,
-  },
-  signInButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 96,
-    height: 40,
-    borderRadius: 8,
-    background: "#4d82de",
-    color: "#071017",
-    fontSize: 14,
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  hero: {
-    position: "absolute",
-    inset: 0,
-    display: "grid",
-    placeItems: "center",
-    minHeight: "100vh",
-    padding: "104px 20px 44px",
-    background:
-      "linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08)), linear-gradient(to bottom, rgba(18, 23, 14, 0.16), rgba(18, 23, 14, 0.54)), url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=90')",
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-  },
-  heroContent: {
-    width: "min(100%, 820px)",
-    marginTop: 54,
-    textAlign: "center",
-  },
-  heroTitle: {
-    margin: 0,
-    color: "#203018",
-    fontSize: "clamp(56px, 7vw, 104px)",
-    fontWeight: 800,
-    letterSpacing: 0,
-    lineHeight: 0.95,
-    textShadow: "0 2px 20px rgba(255, 255, 255, 0.45)",
-  },
-  heroCopy: {
-    margin: "22px auto 42px",
-    maxWidth: 620,
-    color: "#ffffff",
-    fontSize: "clamp(17px, 2vw, 22px)",
-    fontWeight: 700,
-    lineHeight: 1.32,
-    textShadow: "0 2px 12px rgba(0, 0, 0, 0.34)",
-  },
-  searchPanel: {
-    display: "grid",
-    gridTemplateColumns: "minmax(210px, 1.3fr) minmax(130px, 0.7fr) 144px",
-    gap: 10,
-    alignItems: "center",
-    width: "min(100%, 650px)",
-    margin: "0 auto",
-    border: "1px solid rgba(255, 255, 255, 0.68)",
-    borderRadius: 14,
-    background: "rgba(255, 255, 255, 0.9)",
-    boxShadow: "0 22px 60px rgba(23, 34, 18, 0.22)",
-    padding: 10,
-  },
-  locationField: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    minWidth: 0,
-    height: 48,
-    border: 0,
-    borderRadius: 10,
-    background: "#eef0ec",
-    color: "#5f675d",
-    fontSize: 16,
-    padding: "0 14px",
-  },
-  locationInput: {
-    minWidth: 0,
-    width: "100%",
-    border: 0,
-    background: "transparent",
-    color: "#3f453c",
-    font: "600 16px Arial, Helvetica, sans-serif",
-    outline: "none",
-    padding: 0,
-  },
-  select: {
-    height: 48,
-    border: 0,
-    borderRadius: 10,
-    background: "#eef0ec",
-    color: "#3f453c",
-    cursor: "pointer",
-    font: "600 16px Arial, Helvetica, sans-serif",
-    outline: "none",
-    padding: "0 14px",
-  },
-  searchButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    height: 48,
-    border: 0,
-    borderRadius: 10,
-    background: "#4d82de",
-    color: "#ffffff",
-    cursor: "pointer",
-    font: "800 18px Arial, Helvetica, sans-serif",
-    padding: "0 18px",
-  },
-  responsiveSearchPanel: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 170px), 1fr))",
-    gap: 10,
-    alignItems: "center",
-    width: "min(100%, 650px)",
-    margin: "0 auto",
-    border: "1px solid rgba(255, 255, 255, 0.68)",
-    borderRadius: 14,
-    background: "rgba(255, 255, 255, 0.9)",
-    boxShadow: "0 22px 60px rgba(23, 34, 18, 0.22)",
-    padding: 10,
-  },
-} satisfies Record<string, CSSProperties>;
-
-function HomeIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="25"
-      height="25"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m3 11 9-8 9 8" />
-      <path d="M5 10v10h14V10" />
-      <path d="M10 20v-6h4v6" />
-    </svg>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="17"
-      height="17"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="17"
-      height="17"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 21a8 8 0 0 0-16 0" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
-function BellIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
-      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
-    </svg>
-  );
-}
-
-function LocationIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 10c0 5-8 11-8 11s-8-6-8-11a8 8 0 1 1 16 0Z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="19"
-      height="19"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
+import { Bell, Heart, Home, MapPin, Search, User } from "lucide-react";
+import ThemeToggle from "./_components/theme-toggle";
 
 export default function Page() {
   const router = useRouter();
@@ -306,59 +14,83 @@ export default function Page() {
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const params = new URLSearchParams();
+
     if (location.trim()) params.set("location", location.trim());
     if (price !== "any") params.set("price", price);
+
     const query = params.toString();
     router.push(query ? `/dashboard?${query}` : "/dashboard");
   };
 
   return (
-    <main style={styles.page}>
-      <nav style={styles.navbar}>
-        <Link href="/" style={styles.logo}>
-          <HomeIcon />
-          <span style={styles.logoText}>StayNest</span>
+    <main className="relative min-h-screen overflow-hidden bg-slate-200 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+      <nav className="relative z-10 flex min-h-20 items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-12">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-3xl font-black text-slate-950"
+        >
+          <Home size={25} aria-hidden="true" />
+          <span>StayNest</span>
         </Link>
 
-        <div style={styles.navActions}>
-          <Link href="/saved" style={styles.navLink}>
-            <HeartIcon />
+        <div className="flex items-center gap-3 sm:gap-5">
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
+          <Link
+            href="/saved"
+            className="hidden items-center gap-2 text-sm font-black text-slate-950 sm:inline-flex"
+          >
+            <Heart size={17} aria-hidden="true" />
             <span>Saved</span>
           </Link>
-          <Link href="/profile" style={styles.navLink}>
-            <UserIcon />
+          <Link
+            href="/profile"
+            className="hidden items-center gap-2 text-sm font-black text-slate-950 sm:inline-flex"
+          >
+            <User size={17} aria-hidden="true" />
             <span>Profile</span>
           </Link>
-          <Link href="/notifications" style={styles.iconButton} aria-label="Notifications">
-            <BellIcon />
+          <Link
+            href="/notifications"
+            className="grid h-8 w-8 place-items-center rounded-full text-slate-950 transition hover:bg-white/50"
+            aria-label="Notifications"
+          >
+            <Bell size={18} aria-hidden="true" />
           </Link>
-          <Link href="/login" style={styles.signInButton}>
+          <Link
+            href="/login"
+            className="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-500 px-5 text-sm font-black text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600"
+          >
             Sign In
           </Link>
         </div>
       </nav>
 
-      <section style={styles.hero}>
-        <div style={styles.heroContent}>
-          <h1 style={styles.heroTitle}>
+      <section className="absolute inset-0 grid min-h-screen place-items-center bg-[linear-gradient(rgba(255,255,255,0.18),rgba(255,255,255,0.08)),linear-gradient(to_bottom,rgba(18,23,14,0.16),rgba(18,23,14,0.54)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center px-5 pb-11 pt-28">
+        <div className="mt-14 w-[min(100%,820px)] text-center">
+          <h1 className="text-6xl font-black leading-none tracking-normal text-green-950 drop-shadow-[0_2px_20px_rgba(255,255,255,0.45)] sm:text-7xl lg:text-8xl">
             Find Your Perfect
             <br />
             Room Easily
           </h1>
-          <p style={styles.heroCopy}>
+          <p className="mx-auto mt-6 max-w-2xl text-lg font-bold leading-8 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.34)] sm:text-xl">
             Discover affordable rooms and hostels near your campus. Compare
             prices, check facilities, and book with less hassle.
           </p>
 
-          <form style={styles.responsiveSearchPanel} onSubmit={handleSearch}>
-            <label style={styles.locationField}>
-              <LocationIcon />
+          <form
+            onSubmit={handleSearch}
+            className="mx-auto mt-10 grid w-[min(100%,650px)] grid-cols-1 items-center gap-3 rounded-2xl border border-white/70 bg-white/90 p-3 shadow-2xl shadow-slate-900/20 sm:grid-cols-[minmax(210px,1.3fr)_minmax(130px,0.7fr)_144px]"
+          >
+            <label className="flex h-12 min-w-0 items-center gap-2 rounded-xl bg-slate-100 px-4 text-slate-500">
+              <MapPin size={18} aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Enter location or area...."
+                placeholder="Enter location or area..."
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
-                style={styles.locationInput}
+                className="min-w-0 flex-1 bg-transparent text-base font-semibold text-slate-700 outline-none"
               />
             </label>
 
@@ -366,7 +98,7 @@ export default function Page() {
               aria-label="Price range"
               value={price}
               onChange={(event) => setPrice(event.target.value)}
-              style={styles.select}
+              className="h-12 cursor-pointer rounded-xl border-0 bg-slate-100 px-4 text-base font-semibold text-slate-700 outline-none"
             >
               <option value="any">Any Price</option>
               <option value="low">Under Rs. 8,000</option>
@@ -374,8 +106,11 @@ export default function Page() {
               <option value="high">Rs. 15,000+</option>
             </select>
 
-            <button type="submit" style={styles.searchButton}>
-              <SearchIcon />
+            <button
+              type="submit"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 text-lg font-black text-white transition hover:bg-emerald-600"
+            >
+              <Search size={19} aria-hidden="true" />
               <span>Search</span>
             </button>
           </form>

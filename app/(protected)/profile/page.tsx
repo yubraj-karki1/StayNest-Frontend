@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-  type CSSProperties,
-  type FormEvent,
-} from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   CalendarClock,
@@ -25,463 +20,9 @@ import {
   Star,
 } from "lucide-react";
 import LogoutButton from "../../_components/logout-button";
+import ThemeToggle from "../../_components/theme-toggle";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { apiRequest, type UserProfile } from "../../_lib/api";
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    color: "#172033",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    background: "#f8f9fc",
-  },
-  hero: {
-    background:
-      "linear-gradient(115deg, #6e756b 0%, #a7aaa8 48%, #cbc9d9 100%)",
-    color: "#ffffff",
-    padding: "48px clamp(20px, 6vw, 64px) 32px",
-  },
-  heroInner: {
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 28,
-    width: "min(1160px, 100%)",
-    margin: "0 auto",
-  },
-  identity: {
-    display: "flex",
-    alignItems: "center",
-    gap: 24,
-    minWidth: 0,
-  },
-  avatarWrap: {
-    position: "relative",
-    flex: "0 0 auto",
-    width: 116,
-    height: 116,
-    border: "4px solid #ffffff",
-    borderRadius: 14,
-    background: "#d8ddd5",
-    boxShadow: "0 10px 28px rgba(20, 24, 21, 0.28)",
-    transform: "rotate(2deg)",
-  },
-  avatar: {
-    display: "block",
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
-    objectFit: "cover",
-  },
-  verifiedBadge: {
-    position: "absolute",
-    right: -10,
-    bottom: -10,
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 4,
-    border: "2px solid #ffffff",
-    borderRadius: 999,
-    background: "#dff6e6",
-    color: "#278650",
-    fontSize: 9,
-    fontWeight: 900,
-    padding: "5px 8px",
-    transform: "rotate(-2deg)",
-  },
-  name: {
-    margin: "0 0 9px",
-    fontSize: "clamp(30px, 5vw, 44px)",
-    lineHeight: 1,
-  },
-  meta: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
-    margin: 0,
-    color: "rgba(255, 255, 255, 0.9)",
-    fontSize: 13,
-    fontWeight: 600,
-  },
-  metaItem: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 5,
-  },
-  heroActions: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  heroButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-    minHeight: 42,
-    border: "1px solid rgba(255, 255, 255, 0.55)",
-    borderRadius: 8,
-    background: "rgba(255, 255, 255, 0.26)",
-    color: "#ffffff",
-    cursor: "pointer",
-    font: "800 13px Arial, Helvetica, sans-serif",
-    padding: "0 16px",
-  },
-  shareButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-    minHeight: 42,
-    border: 0,
-    borderRadius: 8,
-    background: "#ffffff",
-    color: "#2e5598",
-    cursor: "pointer",
-    font: "800 13px Arial, Helvetica, sans-serif",
-    padding: "0 16px",
-    boxShadow: "0 8px 20px rgba(42, 47, 65, 0.18)",
-  },
-  shell: {
-    width: "min(1160px, calc(100% - 32px))",
-    margin: "0 auto",
-    padding: "40px 0 70px",
-  },
-  stats: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: 16,
-    marginBottom: 28,
-  },
-  statCard: {
-    border: "1px solid #e7eaf0",
-    borderRadius: 13,
-    background: "#ffffff",
-    boxShadow: "0 8px 25px rgba(37, 48, 67, 0.06)",
-    padding: "21px 14px",
-    textAlign: "center",
-  },
-  statValue: {
-    display: "block",
-    color: "#1d4f94",
-    fontSize: 22,
-    fontWeight: 900,
-  },
-  statLabel: {
-    display: "block",
-    marginTop: 7,
-    color: "#767d88",
-    fontSize: 9,
-    fontWeight: 900,
-    letterSpacing: 1.1,
-    textTransform: "uppercase",
-  },
-  columns: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(min(100%, 330px), 1fr))",
-    alignItems: "start",
-    gap: 28,
-  },
-  card: {
-    overflow: "hidden",
-    border: "1px solid #e1e5ec",
-    borderRadius: 15,
-    background: "#ffffff",
-    boxShadow: "0 13px 35px rgba(37, 48, 67, 0.07)",
-  },
-  cardHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    background: "#f4f5f8",
-    padding: "19px 24px",
-  },
-  cardTitle: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    margin: 0,
-    fontSize: 18,
-  },
-  titleIcon: {
-    display: "grid",
-    placeItems: "center",
-    width: 32,
-    height: 32,
-    borderRadius: "50%",
-    background: "#e5edff",
-    color: "#3d6db7",
-  },
-  privateBadge: {
-    borderRadius: 999,
-    background: "#e5e7ec",
-    color: "#656b75",
-    fontSize: 8,
-    fontWeight: 900,
-    padding: "5px 8px",
-  },
-  infoBody: {
-    padding: "28px",
-  },
-  infoGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
-    gap: "28px 34px",
-  },
-  infoLabel: {
-    display: "block",
-    marginBottom: 9,
-    color: "#747b87",
-    fontSize: 9,
-    fontWeight: 900,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
-  infoValue: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    margin: 0,
-    color: "#28303d",
-    fontSize: 14,
-    lineHeight: 1.45,
-  },
-  confirmed: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 5,
-    borderRadius: 999,
-    background: "#dff6e6",
-    color: "#278650",
-    fontSize: 11,
-    fontWeight: 900,
-    padding: "6px 9px",
-  },
-  about: {
-    gridColumn: "1 / -1",
-  },
-  aboutBox: {
-    margin: 0,
-    borderRadius: 12,
-    background: "#f3f4f7",
-    color: "#606875",
-    fontSize: 13,
-    fontStyle: "italic",
-    lineHeight: 1.65,
-    padding: "19px",
-  },
-  form: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
-    gap: 18,
-  },
-  field: {
-    display: "grid",
-    gap: 7,
-    color: "#59616d",
-    fontSize: 11,
-    fontWeight: 900,
-    letterSpacing: 0.7,
-    textTransform: "uppercase",
-  },
-  input: {
-    boxSizing: "border-box",
-    width: "100%",
-    height: 45,
-    border: "1px solid #d9dee7",
-    borderRadius: 8,
-    background: "#ffffff",
-    color: "#252d39",
-    font: "600 14px Arial, Helvetica, sans-serif",
-    padding: "0 13px",
-  },
-  formActions: {
-    gridColumn: "1 / -1",
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  saveButton: {
-    minHeight: 42,
-    border: 0,
-    borderRadius: 8,
-    background: "#315f9f",
-    color: "#ffffff",
-    cursor: "pointer",
-    font: "800 13px Arial, Helvetica, sans-serif",
-    padding: "0 18px",
-  },
-  cancelButton: {
-    minHeight: 42,
-    border: "1px solid #d9dee7",
-    borderRadius: 8,
-    background: "#ffffff",
-    color: "#4e5662",
-    cursor: "pointer",
-    font: "800 13px Arial, Helvetica, sans-serif",
-    padding: "0 18px",
-  },
-  success: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    margin: 0,
-    color: "#278650",
-    fontSize: 13,
-    fontWeight: 800,
-  },
-  sideTitle: {
-    margin: "0 0 14px 7px",
-    color: "#555d69",
-    fontSize: 10,
-    fontWeight: 900,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-  sideList: {
-    display: "grid",
-    gap: 12,
-  },
-  managementLink: {
-    display: "flex",
-    alignItems: "center",
-    gap: 13,
-    minHeight: 66,
-    border: "1px solid #e2e6ed",
-    borderRadius: 12,
-    background: "#ffffff",
-    color: "#232b36",
-    boxShadow: "0 8px 23px rgba(37, 48, 67, 0.06)",
-    padding: "0 15px",
-    textDecoration: "none",
-  },
-  managementIcon: {
-    display: "grid",
-    placeItems: "center",
-    flex: "0 0 auto",
-    width: 34,
-    height: 34,
-    borderRadius: "50%",
-    background: "#f0f2f5",
-    color: "#505865",
-  },
-  managementText: {
-    minWidth: 0,
-    flex: 1,
-  },
-  managementTitle: {
-    display: "block",
-    fontSize: 14,
-    fontWeight: 900,
-  },
-  managementCopy: {
-    display: "block",
-    marginTop: 3,
-    color: "#848a93",
-    fontSize: 9,
-  },
-  logoutCard: {
-    display: "flex",
-    alignItems: "center",
-    gap: 13,
-    width: "100%",
-    minHeight: 66,
-    border: "1px solid #f0d9dc",
-    borderRadius: 12,
-    background: "#fff7f7",
-    color: "#c43b4c",
-    fontSize: 14,
-    fontWeight: 900,
-    padding: "0 15px",
-  },
-  promo: {
-    marginTop: 18,
-    borderRadius: 14,
-    background: "linear-gradient(145deg, #3772b9, #24518d)",
-    color: "#ffffff",
-    boxShadow: "0 17px 35px rgba(35, 78, 132, 0.28)",
-    padding: "22px",
-  },
-  promoBadge: {
-    display: "inline-block",
-    borderRadius: 999,
-    background: "rgba(255, 255, 255, 0.24)",
-    fontSize: 9,
-    fontWeight: 900,
-    padding: "5px 8px",
-  },
-  promoTitle: {
-    margin: "13px 0 7px",
-    fontSize: 19,
-  },
-  promoCopy: {
-    margin: "0 0 18px",
-    color: "#e8f0fb",
-    fontSize: 12,
-    lineHeight: 1.55,
-  },
-  promoLink: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: 42,
-    borderRadius: 8,
-    background: "#ffffff",
-    color: "#24518d",
-    fontSize: 12,
-    fontWeight: 900,
-    textDecoration: "none",
-  },
-  footer: {
-    borderTop: "1px solid #e1e4e9",
-    background: "#f1f2f5",
-    padding: "28px clamp(20px, 6vw, 64px)",
-  },
-  footerInner: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 22,
-    width: "min(1160px, 100%)",
-    margin: "0 auto",
-  },
-  logo: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    color: "#172033",
-    fontSize: 22,
-    fontWeight: 900,
-    textDecoration: "none",
-  },
-  footerLinks: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 25,
-  },
-  footerLink: {
-    color: "#68707b",
-    fontSize: 11,
-    textDecoration: "none",
-  },
-  copyright: {
-    width: "100%",
-    margin: "20px 0 0",
-    borderTop: "1px solid #d9dde3",
-    color: "#8a9099",
-    fontSize: 10,
-    paddingTop: 17,
-    textAlign: "center",
-  },
-} satisfies Record<string, CSSProperties>;
 
 export default function ProfilePage() {
   const { savedRoomIds } = useSavedRooms();
@@ -507,13 +48,16 @@ export default function ProfilePage() {
         setAbout(user.about);
       })
       .catch((error) =>
-        setProfileError(error instanceof Error ? error.message : "Unable to load profile"),
+        setProfileError(
+          error instanceof Error ? error.message : "Unable to load profile",
+        ),
       );
   }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setProfileError("");
+
     try {
       await apiRequest("/profile", {
         method: "PUT",
@@ -528,7 +72,9 @@ export default function ProfilePage() {
       setIsSaved(true);
       setIsEditing(false);
     } catch (error) {
-      setProfileError(error instanceof Error ? error.message : "Unable to save profile");
+      setProfileError(
+        error instanceof Error ? error.message : "Unable to save profile",
+      );
     }
   };
 
@@ -560,29 +106,35 @@ export default function ProfilePage() {
   ];
 
   return (
-    <main style={styles.page}>
-      <section style={styles.hero}>
-        <div style={styles.heroInner}>
-          <div style={styles.identity}>
-            <div style={styles.avatarWrap}>
+    <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <section className="bg-gradient-to-r from-slate-600 via-slate-400 to-indigo-200 px-5 py-10 text-white sm:px-8 lg:px-16">
+        <div className="mx-auto mb-6 flex w-[min(1160px,100%)] justify-end">
+          <ThemeToggle />
+        </div>
+        <div className="mx-auto flex w-[min(1160px,100%)] flex-wrap items-end justify-between gap-7">
+          <div className="flex min-w-0 items-center gap-6">
+            <div className="relative h-28 w-28 flex-none rotate-2 rounded-2xl border-4 border-white bg-slate-200 shadow-xl shadow-slate-900/25">
               <img
                 src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=85"
                 alt={name}
-                style={styles.avatar}
+                className="h-full w-full rounded-xl object-cover"
               />
-              <span style={styles.verifiedBadge}>
+              <span className="absolute -bottom-3 -right-3 inline-flex -rotate-2 items-center gap-1 rounded-full border-2 border-white bg-emerald-50 px-2 py-1 text-[10px] font-black text-emerald-700">
                 <CheckCircle2 size={11} aria-hidden="true" />
                 Verified
               </span>
             </div>
+
             <div>
-              <h1 style={styles.name}>{name}</h1>
-              <p style={styles.meta}>
-                <span style={styles.metaItem}>
+              <h1 className="text-4xl font-black leading-none tracking-normal sm:text-5xl">
+                {name}
+              </h1>
+              <p className="mt-3 flex flex-wrap items-center gap-3 text-sm font-semibold text-white/90">
+                <span className="inline-flex items-center gap-1">
                   <CalendarClock size={13} aria-hidden="true" />
                   Joined March 2026
                 </span>
-                <span style={styles.metaItem}>
+                <span className="inline-flex items-center gap-1">
                   <MapPin size={13} aria-hidden="true" />
                   {location}
                 </span>
@@ -590,10 +142,10 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div style={styles.heroActions}>
+          <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              style={styles.heroButton}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/60 bg-white/25 px-4 text-sm font-black text-white transition hover:bg-white/30"
               onClick={() => {
                 setIsEditing(true);
                 setIsSaved(false);
@@ -602,7 +154,11 @@ export default function ProfilePage() {
               <Edit3 size={14} aria-hidden="true" />
               Edit Profile
             </button>
-            <button type="button" style={styles.shareButton} onClick={shareProfile}>
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-black text-emerald-700 shadow-lg shadow-slate-900/15 transition hover:bg-emerald-50"
+              onClick={shareProfile}
+            >
               <Share2 size={14} aria-hidden="true" />
               {shareStatus || "Share Profile"}
             </button>
@@ -610,84 +166,99 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <section style={styles.shell}>
-        <div style={styles.stats}>
+      <section className="mx-auto w-[min(1160px,calc(100%-32px))] py-10">
+        <div className="mb-7 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map((stat) => (
-            <div style={styles.statCard} key={stat.label}>
-              <strong style={styles.statValue}>{stat.value}</strong>
-              <span style={styles.statLabel}>{stat.label}</span>
+            <div
+              className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-lg shadow-slate-200/60"
+              key={stat.label}
+            >
+              <strong className="block text-2xl font-black text-emerald-700">
+                {stat.value}
+              </strong>
+              <span className="mt-2 block text-[10px] font-black uppercase tracking-wide text-slate-400">
+                {stat.label}
+              </span>
             </div>
           ))}
         </div>
 
-        <div style={styles.columns}>
-          <article style={styles.card}>
-            <header style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>
-                <span style={styles.titleIcon}>
+        <div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
+            <header className="flex items-center justify-between gap-3 bg-slate-100 px-6 py-5">
+              <h2 className="flex items-center gap-3 text-xl font-black text-slate-950">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-100 text-emerald-700">
                   <LockKeyhole size={16} aria-hidden="true" />
                 </span>
                 Account Information
               </h2>
-              <span style={styles.privateBadge}>PRIVATE</span>
+              <span className="rounded-full bg-slate-950 px-3 py-1 text-[10px] font-black text-white">
+                PRIVATE
+              </span>
             </header>
 
-            <div style={styles.infoBody}>
+            <div className="p-6">
               {isEditing ? (
-                <form style={styles.form} onSubmit={handleSubmit}>
-                  <label style={styles.field}>
+                <form
+                  className="grid grid-cols-1 gap-4 md:grid-cols-2"
+                  onSubmit={handleSubmit}
+                >
+                  <label className="grid gap-2 text-sm font-black text-slate-700">
                     Full name
                     <input
                       value={name}
                       onChange={(event) => setName(event.target.value)}
                       required
-                      style={styles.input}
+                      className="h-12 rounded-xl border border-slate-200 px-4 text-base font-semibold outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                   </label>
-                  <label style={styles.field}>
+                  <label className="grid gap-2 text-sm font-black text-slate-700">
                     Email address
                     <input
                       type="email"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       required
-                      style={styles.input}
+                      className="h-12 rounded-xl border border-slate-200 px-4 text-base font-semibold outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                   </label>
-                  <label style={styles.field}>
+                  <label className="grid gap-2 text-sm font-black text-slate-700">
                     Phone number
                     <input
                       type="tel"
                       value={phone}
                       onChange={(event) => setPhone(event.target.value)}
                       required
-                      style={styles.input}
+                      className="h-12 rounded-xl border border-slate-200 px-4 text-base font-semibold outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                   </label>
-                  <label style={styles.field}>
+                  <label className="grid gap-2 text-sm font-black text-slate-700">
                     Primary location
                     <input
                       value={location}
                       onChange={(event) => setLocation(event.target.value)}
                       required
-                      style={styles.input}
+                      className="h-12 rounded-xl border border-slate-200 px-4 text-base font-semibold outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                   </label>
-                  <label style={{ ...styles.field, gridColumn: "1 / -1" }}>
+                  <label className="grid gap-2 text-sm font-black text-slate-700 md:col-span-2">
                     About me
                     <input
                       value={about}
                       onChange={(event) => setAbout(event.target.value)}
-                      style={styles.input}
+                      className="h-12 rounded-xl border border-slate-200 px-4 text-base font-semibold outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                   </label>
-                  <div style={styles.formActions}>
-                    <button type="submit" style={styles.saveButton}>
+                  <div className="flex flex-wrap gap-3 md:col-span-2">
+                    <button
+                      type="submit"
+                      className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-sm font-black text-white"
+                    >
                       Save Changes
                     </button>
                     <button
                       type="button"
-                      style={styles.cancelButton}
+                      className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-black text-slate-700"
                       onClick={() => setIsEditing(false)}
                     >
                       Cancel
@@ -695,50 +266,65 @@ export default function ProfilePage() {
                   </div>
                 </form>
               ) : (
-                <div style={styles.infoGrid}>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <div>
-                    <span style={styles.infoLabel}>Email Address</span>
-                    <p style={styles.infoValue}>
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-400">
+                      Email Address
+                    </span>
+                    <p className="mt-2 flex items-center gap-2 text-sm font-bold text-slate-700">
                       <Mail size={15} aria-hidden="true" />
                       {email}
                     </p>
                   </div>
                   <div>
-                    <span style={styles.infoLabel}>Phone Number</span>
-                    <p style={styles.infoValue}>
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-400">
+                      Phone Number
+                    </span>
+                    <p className="mt-2 flex items-center gap-2 text-sm font-bold text-slate-700">
                       <Phone size={15} aria-hidden="true" />
                       {phone}
                     </p>
                   </div>
                   <div>
-                    <span style={styles.infoLabel}>Primary Location</span>
-                    <p style={styles.infoValue}>
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-400">
+                      Primary Location
+                    </span>
+                    <p className="mt-2 flex items-center gap-2 text-sm font-bold text-slate-700">
                       <MapPin size={15} aria-hidden="true" />
                       {location}
                     </p>
                   </div>
                   <div>
-                    <span style={styles.infoLabel}>Identity Verification</span>
-                    <span style={styles.confirmed}>
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-400">
+                      Identity Verification
+                    </span>
+                    <span className="mt-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700">
                       <ShieldCheck size={14} aria-hidden="true" />
                       Identity Confirmed
                     </span>
                   </div>
-                  <div style={styles.about}>
-                    <span style={styles.infoLabel}>About Me</span>
-                    <p style={styles.aboutBox}>&quot;{about}&quot;</p>
+                  <div className="md:col-span-2">
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-400">
+                      About Me
+                    </span>
+                    <p className="mt-2 rounded-2xl bg-slate-50 p-4 text-sm leading-7 text-slate-600">
+                      &quot;{about}&quot;
+                    </p>
                   </div>
                 </div>
               )}
 
               {isSaved && (
-                <p style={{ ...styles.success, marginTop: 18 }} role="status">
+                <p
+                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-black text-emerald-700"
+                  role="status"
+                >
                   <CheckCircle2 size={16} aria-hidden="true" />
                   Profile saved successfully.
                 </p>
               )}
               {profileError && (
-                <p style={{ marginTop: 18, color: "#b83f50" }} role="alert">
+                <p className="mt-5 text-sm font-bold text-rose-600" role="alert">
                   {profileError}
                 </p>
               )}
@@ -746,57 +332,82 @@ export default function ProfilePage() {
           </article>
 
           <aside>
-            <h2 style={styles.sideTitle}>Account Management</h2>
-            <div style={styles.sideList}>
+            <h2 className="mb-4 text-xl font-black text-slate-950">
+              Account Management
+            </h2>
+            <div className="grid gap-3">
               <button
                 type="button"
-                style={{ ...styles.managementLink, width: "100%", textAlign: "left" }}
+                className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left shadow-lg shadow-slate-200/50 transition hover:-translate-y-0.5 hover:shadow-xl"
                 onClick={() => setIsEditing(true)}
               >
-                <span style={styles.managementIcon}>
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
                   <Settings size={16} aria-hidden="true" />
                 </span>
-                <span style={styles.managementText}>
-                  <span style={styles.managementTitle}>Account Settings</span>
-                  <span style={styles.managementCopy}>Security & privacy preferences</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-black text-slate-900">
+                    Account Settings
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Security & privacy preferences
+                  </span>
                 </span>
                 <ChevronRight size={16} aria-hidden="true" />
               </button>
 
-              <Link href="/saved" style={styles.managementLink}>
-                <span style={styles.managementIcon}>
+              <Link
+                href="/saved"
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-lg shadow-slate-200/50 transition hover:-translate-y-0.5 hover:shadow-xl"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-600">
                   <Heart size={16} aria-hidden="true" />
                 </span>
-                <span style={styles.managementText}>
-                  <span style={styles.managementTitle}>Saved Rooms</span>
-                  <span style={styles.managementCopy}>Manage your favorites list</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-black text-slate-900">
+                    Saved Rooms
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Manage your favorites list
+                  </span>
                 </span>
                 <ChevronRight size={16} aria-hidden="true" />
               </Link>
 
-              <Link href="/dashboard" style={styles.managementLink}>
-                <span style={styles.managementIcon}>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-lg shadow-slate-200/50 transition hover:-translate-y-0.5 hover:shadow-xl"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-600">
                   <RotateCcw size={16} aria-hidden="true" />
                 </span>
-                <span style={styles.managementText}>
-                  <span style={styles.managementTitle}>Booking History</span>
-                  <span style={styles.managementCopy}>Past and upcoming trips</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-black text-slate-900">
+                    Booking History
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Past and upcoming trips
+                  </span>
                 </span>
                 <ChevronRight size={16} aria-hidden="true" />
               </Link>
 
-              <LogoutButton iconSize={16} style={styles.logoutCard} />
+              <LogoutButton
+                iconSize={16}
+                className="flex w-full items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-4 text-left text-sm font-black text-rose-600 transition hover:bg-rose-100"
+              />
             </div>
 
-            <div style={styles.promo}>
-              <span style={styles.promoBadge}>LIMITED OFFER</span>
-              <h2 style={styles.promoTitle}>Host with StayNest</h2>
-              <p style={styles.promoCopy}>
+            <div className="mt-6 rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white shadow-xl shadow-emerald-400/25">
+              <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-black">
+                LIMITED OFFER
+              </span>
+              <h2 className="mt-4 text-2xl font-black">Host with StayNest</h2>
+              <p className="mt-2 text-sm leading-6 text-white/90">
                 Earn by sharing your space with the StayNest community.
               </p>
               <a
                 href="mailto:partners@staynest.com?subject=Host with StayNest"
-                style={styles.promoLink}
+                className="mt-5 inline-flex rounded-xl bg-white px-4 py-3 text-sm font-black text-emerald-700"
               >
                 Learn More
               </a>
@@ -805,29 +416,32 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <footer style={styles.footer}>
-        <div style={styles.footerInner}>
-          <Link href="/dashboard" style={styles.logo}>
+      <footer className="border-t border-slate-200 bg-white px-5 py-8">
+        <div className="mx-auto flex w-[min(1160px,100%)] flex-wrap items-center justify-between gap-5">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
+          >
             <Home size={25} aria-hidden="true" />
             StayNest
           </Link>
-          <div style={styles.footerLinks}>
-            <Link href="/legal#privacy" style={styles.footerLink}>
+          <div className="flex flex-wrap items-center gap-5">
+            <Link href="/legal#privacy" className="text-xs text-slate-500">
               Privacy Policy
             </Link>
-            <Link href="/legal#terms" style={styles.footerLink}>
+            <Link href="/legal#terms" className="text-xs text-slate-500">
               Terms
             </Link>
-            <a href="mailto:support@staynest.com" style={styles.footerLink}>
+            <a href="mailto:support@staynest.com" className="text-xs text-slate-500">
               Help Center
             </a>
           </div>
-          <span style={{ ...styles.metaItem, color: "#7b828c" }}>
+          <span className="inline-flex items-center gap-1 text-xs text-slate-500">
             <Star size={14} aria-hidden="true" />
             4.9 member rating
           </span>
-          <p style={styles.copyright}>
-            © 2026 StayNest Inc. Crafted with care for room seekers.
+          <p className="w-full border-t border-slate-200 pt-4 text-center text-xs text-slate-400">
+            (c) 2026 StayNest Inc. Crafted with care for room seekers.
           </p>
         </div>
       </footer>

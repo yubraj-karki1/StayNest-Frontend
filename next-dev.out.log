@@ -1,28 +1,14 @@
 
-> predev
-> npm run clean:next
-
-
-> clean:next
-> powershell -NoProfile -ExecutionPolicy Bypass -Command "if (Test-Path .next) { Remove-Item -LiteralPath .next -Recurse -Force }"
-
-
 > dev
 > next dev
 
    ▲ Next.js 15.5.19
    - Local:        http://localhost:3000
    - Network:      http://192.168.198.1:3000
+   - Environments: .env
 
  ✓ Starting...
- ✓ Ready in 1498ms
- ○ Compiling /_not-found ...
- ✓ Compiled /_not-found in 3.3s (521 modules)
- GET /src/routes/leagues.tsx?tsr-split=component 404 in 3705ms
- GET /src/routes/prediction.tsx?t=1781453191613&tsr-split=component 404 in 3444ms
- GET /src/routes/corners.tsx?tsr-split=component 404 in 3519ms
- GET /src/routes/heatmaps.tsx?tsr-split=component 404 in 3644ms
- GET /src/routes/players.tsx?tsr-split=component 404 in 75ms
- GET /leagues 404 in 74ms
- GET /leagues 404 in 37ms
- GET /players 404 in 40ms
+ ✓ Ready in 1820ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 891ms (655 modules)
+ GET /dashboard 200 in 1221ms

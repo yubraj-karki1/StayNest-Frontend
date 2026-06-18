@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { clearToken } from "../_lib/api";
 
 type LogoutButtonProps = {
   iconSize?: number;
-  style?: CSSProperties;
+  className?: string;
 };
 
 export default function LogoutButton({
   iconSize = 14,
-  style,
+  className = "",
 }: LogoutButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
@@ -35,14 +35,10 @@ export default function LogoutButton({
     <>
       <button
         type="button"
-        style={{
-          border: 0,
-          background: "transparent",
-          cursor: "pointer",
-          padding: 0,
-          font: "inherit",
-          ...style,
-        }}
+        className={
+          className ||
+          "inline-flex items-center gap-2 rounded-full border border-rose-500 px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+        }
         onClick={() => setIsOpen(true)}
       >
         <LogOut size={iconSize} aria-hidden="true" />
@@ -52,15 +48,7 @@ export default function LogoutButton({
       {isOpen && (
         <div
           role="presentation"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 1000,
-            display: "grid",
-            placeItems: "center",
-            background: "rgba(10, 16, 12, 0.55)",
-            padding: 20,
-          }}
+          className="fixed inset-0 z-[1000] grid place-items-center bg-slate-950/60 p-5"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setIsOpen(false);
           }}
@@ -70,69 +58,35 @@ export default function LogoutButton({
             aria-modal="true"
             aria-labelledby="logout-dialog-title"
             aria-describedby="logout-dialog-description"
-            style={{
-              width: "min(100%, 390px)",
-              borderRadius: 16,
-              background: "#ffffff",
-              boxShadow: "0 24px 80px rgba(0, 0, 0, 0.3)",
-              padding: "28px",
-              textAlign: "center",
-            }}
+            className="w-[min(100%,390px)] rounded-3xl bg-white p-7 text-center shadow-2xl shadow-slate-950/30"
           >
-            <span
-              style={{
-                display: "grid",
-                placeItems: "center",
-                width: 52,
-                height: 52,
-                margin: "0 auto 16px",
-                borderRadius: "50%",
-                background: "#fff0eb",
-                color: "#dc6545",
-              }}
-            >
+            <span className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-rose-50 text-rose-500">
               <LogOut size={23} aria-hidden="true" />
             </span>
             <h2
               id="logout-dialog-title"
-              style={{ margin: "0 0 8px", color: "#202520", fontSize: 21 }}
+              className="text-xl font-black text-slate-950"
             >
               Do you want to logout?
             </h2>
             <p
               id="logout-dialog-description"
-              style={{ margin: "0 0 24px", color: "#707670", fontSize: 14 }}
+              className="mt-2 text-sm text-slate-500"
             >
               You will need to sign in again to access your account.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 ref={cancelButtonRef}
                 type="button"
-                style={{
-                  height: 44,
-                  border: "1px solid #d9ddd9",
-                  borderRadius: 8,
-                  background: "#ffffff",
-                  color: "#343934",
-                  cursor: "pointer",
-                  font: "700 14px Arial, Helvetica, sans-serif",
-                }}
+                className="h-11 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-700 transition hover:bg-slate-50"
                 onClick={() => setIsOpen(false)}
               >
                 No
               </button>
               <button
                 type="button"
-                style={{
-                  height: 44,
-                  border: 0,
-                  borderRadius: 8,
-                  background: "#dc6545",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  font: "700 14px Arial, Helvetica, sans-serif",
-                }}
+                className="h-11 rounded-xl bg-rose-500 text-sm font-bold text-white transition hover:bg-rose-600"
                 onClick={() => {
                   clearToken();
                   router.push("/login");

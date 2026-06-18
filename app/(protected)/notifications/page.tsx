@@ -1,201 +1,20 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   Bell,
-  Home,
   Heart,
+  Home,
   House,
   Star,
   TrendingDown,
   User,
 } from "lucide-react";
 import LogoutButton from "../../_components/logout-button";
+import ThemeToggle from "../../_components/theme-toggle";
 import { apiRequest } from "../../_lib/api";
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    color: "#454751",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    background:
-      "linear-gradient(rgba(232, 237, 228, 0.78), rgba(232, 237, 228, 0.78)), url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85') center / cover fixed",
-  },
-  nav: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 20,
-    height: 72,
-    padding: "0 clamp(18px, 4vw, 48px)",
-    background: "rgba(255, 255, 255, 0.72)",
-    borderBottom: "1px solid rgba(79, 85, 80, 0.12)",
-    backdropFilter: "blur(14px)",
-  },
-  logo: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    color: "#111511",
-    fontSize: "clamp(18px, 3vw, 22px)",
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  navActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: "clamp(12px, 3vw, 36px)",
-  },
-  navLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    color: "#111511",
-    fontSize: "clamp(12px, 2vw, 14px)",
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  activeNotification: {
-    position: "relative",
-    display: "grid",
-    placeItems: "center",
-    width: 30,
-    height: 30,
-    color: "#517fe0",
-  },
-  navDot: {
-    position: "absolute",
-    top: 2,
-    right: 2,
-    width: 7,
-    height: 7,
-    border: "2px solid #f3f5f1",
-    borderRadius: "50%",
-    background: "#e74335",
-  },
-  content: {
-    width: "min(calc(100% - 20px), 620px)",
-    margin: "0 auto",
-    padding: "clamp(26px, 6vw, 54px) 0 80px",
-  },
-  backLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 7,
-    marginBottom: 18,
-    color: "#34383a",
-    fontSize: 14,
-    fontWeight: 700,
-    textDecoration: "none",
-  },
-  card: {
-    overflow: "hidden",
-    border: "1px solid #d8dbe1",
-    borderRadius: 16,
-    background: "#ffffff",
-    boxShadow: "0 24px 70px rgba(35, 43, 37, 0.18)",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    padding: "23px clamp(14px, 4vw, 20px) 18px",
-    borderBottom: "1px solid #d8dbe1",
-  },
-  title: {
-    margin: "0 0 3px",
-    color: "#41434b",
-    fontSize: "clamp(19px, 4vw, 22px)",
-    lineHeight: 1.1,
-  },
-  subtitle: {
-    margin: 0,
-    color: "#92939b",
-    fontSize: "clamp(12px, 3vw, 14px)",
-  },
-  markAll: {
-    flex: "0 0 auto",
-    border: 0,
-    background: "transparent",
-    cursor: "pointer",
-    font: "700 clamp(13px, 3vw, 16px) Arial, Helvetica, sans-serif",
-    padding: "7px 0",
-  },
-  list: {
-    background: "#ffffff",
-  },
-  notification: {
-    position: "relative",
-    display: "grid",
-    gridTemplateColumns: "46px minmax(0, 1fr) 9px",
-    gap: "clamp(12px, 3vw, 18px)",
-    width: "100%",
-    minHeight: 132,
-    border: 0,
-    borderBottom: "1px solid #e0e1e5",
-    background: "#ffffff",
-    color: "inherit",
-    cursor: "pointer",
-    padding: "18px clamp(14px, 4vw, 18px)",
-    textAlign: "left",
-  },
-  iconCircle: {
-    display: "grid",
-    placeItems: "center",
-    width: 46,
-    height: 46,
-    borderRadius: "50%",
-    background: "#ffebe5",
-    color: "#ed927d",
-  },
-  notificationBody: {
-    display: "flex",
-    minWidth: 0,
-    flexDirection: "column",
-    alignItems: "flex-start",
-  },
-  notificationTitle: {
-    margin: "2px 0 7px",
-    color: "#484a52",
-    fontSize: 16,
-  },
-  message: {
-    color: "#53555e",
-    fontSize: "clamp(14px, 3vw, 16px)",
-    lineHeight: 1.45,
-  },
-  time: {
-    marginTop: 6,
-    color: "#85878e",
-    fontSize: 14,
-    fontWeight: 800,
-  },
-  unreadDot: {
-    width: 9,
-    height: 9,
-    marginTop: 8,
-    borderRadius: "50%",
-    background: "#6894ed",
-  },
-  cardFooter: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 6,
-    padding: "28px 20px 25px",
-    background: "#edf3ff",
-    textAlign: "center",
-  },
-  footerTitle: {
-    fontSize: 16,
-  },
-  footerCopy: {
-    fontSize: 14,
-  },
-} satisfies Record<string, CSSProperties>;
 
 type Notification = {
   id: string;
@@ -244,49 +63,74 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main style={styles.page}>
-      <nav style={styles.nav}>
-        <Link href="/dashboard" style={styles.logo}>
+    <main className="min-h-screen bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-fixed bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-200">
+      <nav className="flex min-h-[72px] items-center justify-between gap-5 border-b border-slate-900/10 bg-white/75 px-5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/80 sm:px-8 lg:px-12">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
+        >
           <Home size={24} strokeWidth={2.4} aria-hidden="true" />
           <span>StayNest</span>
         </Link>
 
-        <div style={styles.navActions}>
-          <Link href="/saved" style={styles.navLink}>
+        <div className="flex items-center gap-4 sm:gap-7">
+          <Link
+            href="/saved"
+            className="hidden items-center gap-2 text-sm font-black text-slate-900 sm:inline-flex"
+          >
             <Heart size={14} aria-hidden="true" />
             <span>Saved</span>
           </Link>
-          <Link href="/profile" style={styles.navLink}>
+          <Link
+            href="/profile"
+            className="hidden items-center gap-2 text-sm font-black text-slate-900 sm:inline-flex"
+          >
             <User size={14} aria-hidden="true" />
             <span>Profile</span>
           </Link>
-          <span style={styles.activeNotification} aria-label="Notifications">
+          <span
+            className="relative grid h-8 w-8 place-items-center text-emerald-600"
+            aria-label="Notifications"
+          >
             <Bell size={17} aria-hidden="true" />
-            {unreadIds.length > 0 && <span style={styles.navDot} />}
+            {unreadIds.length > 0 && (
+              <span className="absolute right-1 top-1 h-2 w-2 rounded-full border-2 border-white bg-rose-500" />
+            )}
           </span>
-          <LogoutButton iconSize={14} style={styles.navLink} />
+          <ThemeToggle />
+          <LogoutButton
+            iconSize={14}
+            className="inline-flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100"
+          />
         </div>
       </nav>
 
-      <section style={styles.content}>
-        <Link href="/dashboard" style={styles.backLink}>
+      <section className="mx-auto w-[min(calc(100%-20px),620px)] py-8 sm:py-14">
+        <Link
+          href="/dashboard"
+          className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-700"
+        >
           <ArrowLeft size={17} aria-hidden="true" />
           Back to dashboard
         </Link>
 
-        <article style={styles.card}>
-          <header style={styles.header}>
+        <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/15">
+          <header className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-5">
             <div>
-              <h1 style={styles.title}>Notifications</h1>
-              <p style={styles.subtitle}>Stay updated with new listings</p>
+              <h1 className="text-2xl font-black text-slate-800">
+                Notifications
+              </h1>
+              <p className="mt-1 text-sm text-slate-400">
+                Stay updated with new listings
+              </p>
             </div>
             <button
               type="button"
-              style={{
-                ...styles.markAll,
-                color: unreadIds.length > 0 ? "#6b91eb" : "#a0a3aa",
-                cursor: unreadIds.length > 0 ? "pointer" : "default",
-              }}
+              className={`flex-none text-sm font-black ${
+                unreadIds.length > 0
+                  ? "cursor-pointer text-emerald-600"
+                  : "cursor-default text-slate-400"
+              }`}
               onClick={markAllAsRead}
               disabled={unreadIds.length === 0}
             >
@@ -294,38 +138,63 @@ export default function NotificationsPage() {
             </button>
           </header>
 
-          <div style={styles.list}>
-            {notifications.map((notification) => {
-              const Icon = notificationIcons[notification.type];
-              const isUnread = unreadIds.includes(notification.id);
+          <div className="bg-white">
+            {notifications.length > 0 ? (
+              notifications.map((notification) => {
+                const Icon = notificationIcons[notification.type];
+                const isUnread = unreadIds.includes(notification.id);
 
-              return (
-                <button
-                  type="button"
-                  style={styles.notification}
-                  onClick={() => markAsRead(notification.id)}
-                  key={notification.id}
-                  aria-label={`${notification.title}${isUnread ? ", unread" : ""}`}
-                >
-                  <span style={styles.iconCircle}>
-                    <Icon size={20} strokeWidth={2} aria-hidden="true" />
-                  </span>
-                  <span style={styles.notificationBody}>
-                    <strong style={styles.notificationTitle}>{notification.title}</strong>
-                    <span style={styles.message}>{notification.message}</span>
-                    <span style={styles.time}>
-                      {new Date(notification.createdAt).toLocaleString()}
+                return (
+                  <button
+                    type="button"
+                    className="relative grid min-h-32 w-full grid-cols-[46px_minmax(0,1fr)_9px] gap-4 border-b border-slate-200 bg-white px-4 py-5 text-left text-slate-700 transition hover:bg-slate-50"
+                    onClick={() => markAsRead(notification.id)}
+                    key={notification.id}
+                    aria-label={`${notification.title}${
+                      isUnread ? ", unread" : ""
+                    }`}
+                  >
+                    <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-rose-400">
+                      <Icon size={20} strokeWidth={2} aria-hidden="true" />
                     </span>
-                  </span>
-                  {isUnread && <span style={styles.unreadDot} />}
-                </button>
-              );
-            })}
+                    <span className="flex min-w-0 flex-col items-start">
+                      <strong className="mt-1 text-base font-black text-slate-800">
+                        {notification.title}
+                      </strong>
+                      <span className="mt-2 text-sm leading-6 text-slate-600">
+                        {notification.message}
+                      </span>
+                      <span className="mt-2 text-sm font-black text-slate-400">
+                        {new Date(notification.createdAt).toLocaleString()}
+                      </span>
+                    </span>
+                    {isUnread && (
+                      <span className="mt-2 h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    )}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="px-5 py-14 text-center">
+                <Bell
+                  size={38}
+                  className="mx-auto text-slate-300"
+                  aria-hidden="true"
+                />
+                <p className="mt-3 text-sm font-bold text-slate-500">
+                  No notifications yet.
+                </p>
+              </div>
+            )}
           </div>
 
-          <footer style={styles.cardFooter}>
-            <strong style={styles.footerTitle}>Welcome to StayNest</strong>
-            <span style={styles.footerCopy}>Find and save your dream rooms effortlessly.</span>
+          <footer className="flex flex-col items-center gap-2 bg-emerald-50 px-5 py-7 text-center">
+            <strong className="text-base font-black text-slate-800">
+              Welcome to StayNest
+            </strong>
+            <span className="text-sm text-slate-600">
+              Find and save your dream rooms effortlessly.
+            </span>
           </footer>
         </article>
       </section>

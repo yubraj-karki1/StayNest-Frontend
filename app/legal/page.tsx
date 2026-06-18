@@ -1,112 +1,71 @@
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowLeft, Home } from "lucide-react";
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#f2f5ef",
-    color: "#1d241e",
-    fontFamily: "Arial, Helvetica, sans-serif",
-  },
-  nav: {
-    display: "flex",
-    alignItems: "center",
-    minHeight: 72,
-    padding: "0 clamp(18px, 4vw, 48px)",
-    background: "#ffffff",
-  },
-  logo: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    color: "#111611",
-    fontSize: 22,
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  content: {
-    width: "min(760px, calc(100% - 32px))",
-    margin: "0 auto",
-    padding: "44px 0 80px",
-  },
-  backLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 7,
-    color: "#3e463f",
-    fontSize: 14,
-    fontWeight: 700,
-    textDecoration: "none",
-  },
-  title: {
-    margin: "28px 0 8px",
-    fontSize: "clamp(34px, 6vw, 48px)",
-  },
-  intro: {
-    margin: "0 0 32px",
-    color: "#687069",
-    lineHeight: 1.6,
-  },
-  section: {
-    marginTop: 18,
-    scrollMarginTop: 24,
-    borderRadius: 14,
-    background: "#ffffff",
-    boxShadow: "0 12px 35px rgba(24, 34, 26, 0.08)",
-    padding: "24px",
-  },
-  heading: {
-    margin: "0 0 10px",
-    fontSize: 21,
-  },
-  copy: {
-    margin: 0,
-    color: "#59615a",
-    fontSize: 14,
-    lineHeight: 1.7,
-  },
-} satisfies Record<string, CSSProperties>;
+import ThemeToggle from "../_components/theme-toggle";
 
 export default function LegalPage() {
   return (
-    <main style={styles.page}>
-      <nav style={styles.nav}>
-        <Link href="/" style={styles.logo}>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#d1fae5_0%,_#ecfeff_35%,_#f8fafc_70%)] text-slate-900 dark:bg-[radial-gradient(circle_at_top_left,_#0f172a_0%,_#111827_45%,_#020617_100%)] dark:text-slate-100">
+      <nav className="flex min-h-[72px] items-center justify-between bg-white/80 px-5 backdrop-blur-xl dark:bg-slate-900/80 sm:px-8 lg:px-12">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xl font-black text-slate-900 dark:text-slate-100"
+        >
           <Home size={23} aria-hidden="true" />
           StayNest
         </Link>
+        <ThemeToggle />
       </nav>
-      <section style={styles.content}>
-        <Link href="/dashboard" style={styles.backLink}>
+
+      <section className="mx-auto w-[min(760px,calc(100%-32px))] py-11">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-700"
+        >
           <ArrowLeft size={16} aria-hidden="true" />
           Back to dashboard
         </Link>
-        <h1 style={styles.title}>Legal Information</h1>
-        <p style={styles.intro}>
+
+        <h1 className="mt-7 text-4xl font-black tracking-normal text-slate-950 dark:text-slate-100 sm:text-5xl">
+          Legal Information
+        </h1>
+        <p className="mt-2 text-base leading-7 text-slate-600">
           A plain-language overview of how StayNest handles bookings, cookies,
           and personal information.
         </p>
 
-        <article id="terms" style={styles.section}>
-          <h2 style={styles.heading}>Terms of Service</h2>
-          <p style={styles.copy}>
+        <article
+          id="terms"
+          className="mt-8 scroll-mt-6 rounded-3xl border border-white/90 bg-white/90 p-6 shadow-lg shadow-slate-200/60 dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-slate-950/40"
+        >
+          <h2 className="text-xl font-black text-slate-950 dark:text-slate-100">
+            Terms of Service
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
             Provide accurate information, communicate respectfully, and verify
             booking details with property owners before making a commitment.
           </p>
         </article>
-        <article id="cookies" style={styles.section}>
-          <h2 style={styles.heading}>Cookies</h2>
-          <p style={styles.copy}>
+
+        <article
+          id="cookies"
+          className="mt-5 scroll-mt-6 rounded-3xl border border-white/90 bg-white/90 p-6 shadow-lg shadow-slate-200/60 dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-slate-950/40"
+        >
+          <h2 className="text-xl font-black text-slate-950 dark:text-slate-100">Cookies</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
             StayNest stores an authentication token in browser storage so your
             session remains available after a refresh.
           </p>
         </article>
-        <article id="privacy" style={styles.section}>
-          <h2 style={styles.heading}>Privacy Policy</h2>
-          <p style={styles.copy}>
+
+        <article
+          id="privacy"
+          className="mt-5 scroll-mt-6 rounded-3xl border border-white/90 bg-white/90 p-6 shadow-lg shadow-slate-200/60 dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-slate-950/40"
+        >
+          <h2 className="text-xl font-black text-slate-950 dark:text-slate-100">Privacy Policy</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
             Profile, saved-room, notification, and booking data are stored by
-            the StayNest API. Contact support@staynest.com for privacy questions.
+            the StayNest API. Contact support@staynest.com for privacy
+            questions.
           </p>
         </article>
       </section>

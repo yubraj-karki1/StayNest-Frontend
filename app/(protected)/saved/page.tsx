@@ -1,204 +1,92 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowLeft, Heart, Home, MapPin, Trash2 } from "lucide-react";
 import LogoutButton from "../../_components/logout-button";
+import ThemeToggle from "../../_components/theme-toggle";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { rooms } from "../rooms/room-data";
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    color: "#172019",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    background:
-      "linear-gradient(rgba(232, 237, 228, 0.9), rgba(232, 237, 228, 0.9)), url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85') center / cover fixed",
-  },
-  nav: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 18,
-    minHeight: 72,
-    padding: "0 clamp(18px, 4vw, 48px)",
-    background: "rgba(255, 255, 255, 0.62)",
-    backdropFilter: "blur(14px)",
-  },
-  logo: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    color: "#111611",
-    fontSize: 22,
-    fontWeight: 800,
-    textDecoration: "none",
-  },
-  logout: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    color: "#111611",
-    fontSize: 14,
-    fontWeight: 800,
-  },
-  content: {
-    width: "min(1100px, calc(100% - 28px))",
-    margin: "0 auto",
-    padding: "42px 0 80px",
-  },
-  backLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 7,
-    color: "#343a35",
-    fontSize: 14,
-    fontWeight: 700,
-    textDecoration: "none",
-  },
-  heading: {
-    margin: "24px 0 8px",
-    fontSize: "clamp(30px, 5vw, 44px)",
-  },
-  subtitle: {
-    margin: "0 0 30px",
-    color: "#687069",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-    gap: 24,
-  },
-  card: {
-    overflow: "hidden",
-    borderRadius: 16,
-    background: "#ffffff",
-    boxShadow: "0 18px 50px rgba(24, 34, 26, 0.14)",
-  },
-  image: {
-    width: "100%",
-    height: 210,
-    objectFit: "cover",
-  },
-  cardBody: {
-    padding: 18,
-  },
-  cardTitle: {
-    margin: "0 0 8px",
-    fontSize: 19,
-  },
-  location: {
-    display: "flex",
-    alignItems: "center",
-    gap: 5,
-    margin: "0 0 18px",
-    color: "#737a74",
-    fontSize: 13,
-  },
-  cardFooter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  price: {
-    color: "#e06a45",
-    fontWeight: 800,
-  },
-  actions: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  },
-  viewButton: {
-    borderRadius: 7,
-    background: "#4d82de",
-    color: "#ffffff",
-    fontSize: 12,
-    fontWeight: 800,
-    padding: "9px 12px",
-    textDecoration: "none",
-  },
-  removeButton: {
-    display: "grid",
-    placeItems: "center",
-    width: 34,
-    height: 34,
-    border: "1px solid #efcbd0",
-    borderRadius: 7,
-    background: "#fff6f7",
-    color: "#c34b5b",
-    cursor: "pointer",
-  },
-  empty: {
-    borderRadius: 18,
-    background: "rgba(255, 255, 255, 0.88)",
-    boxShadow: "0 18px 55px rgba(24, 34, 26, 0.12)",
-    padding: "70px 24px",
-    textAlign: "center",
-  },
-  emptyIcon: {
-    color: "#e2505e",
-  },
-  emptyTitle: {
-    margin: "16px 0 8px",
-    fontSize: 23,
-  },
-  emptyCopy: {
-    margin: "0 0 22px",
-    color: "#6d746e",
-  },
-} satisfies Record<string, CSSProperties>;
 
 export default function SavedRoomsPage() {
   const { savedRoomIds, isLoaded, removeSavedRoom } = useSavedRooms();
   const savedRooms = rooms.filter((room) => savedRoomIds.includes(room.id));
 
   return (
-    <main style={styles.page}>
-      <nav style={styles.nav}>
-        <Link href="/dashboard" style={styles.logo}>
+    <main className="min-h-screen bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-fixed bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100">
+      <nav className="flex min-h-[72px] items-center justify-between gap-5 bg-white/70 px-5 backdrop-blur-xl dark:bg-slate-900/80 sm:px-8 lg:px-12">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
+        >
           <Home size={23} aria-hidden="true" />
           StayNest
         </Link>
-        <LogoutButton iconSize={13} style={styles.logout} />
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <LogoutButton
+            iconSize={13}
+            className="inline-flex items-center gap-2 rounded-full border border-rose-500 px-4 py-2 text-sm font-black text-rose-600 transition hover:bg-rose-50 dark:border-rose-700 dark:text-rose-300 dark:hover:bg-rose-900/20"
+          />
+        </div>
       </nav>
 
-      <section style={styles.content}>
-        <Link href="/dashboard" style={styles.backLink}>
+      <section className="mx-auto w-[min(1100px,calc(100%-28px))] py-11">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-700"
+        >
           <ArrowLeft size={16} aria-hidden="true" />
           Back to dashboard
         </Link>
-        <h1 style={styles.heading}>Saved Rooms</h1>
-        <p style={styles.subtitle}>
+
+        <h1 className="mt-6 text-4xl font-black tracking-normal text-slate-950 sm:text-5xl">
+          Saved Rooms
+        </h1>
+        <p className="mt-2 text-slate-600">
           {savedRooms.length} {savedRooms.length === 1 ? "room" : "rooms"} saved
         </p>
 
         {!isLoaded ? (
-          <div style={styles.empty}>
-            <p style={styles.emptyCopy}>Loading saved rooms...</p>
+          <div className="mt-8 rounded-3xl border border-white/90 bg-white/90 px-6 py-16 text-center shadow-lg shadow-slate-200/60">
+            <p className="text-sm font-bold text-slate-500">
+              Loading saved rooms...
+            </p>
           </div>
         ) : savedRooms.length > 0 ? (
-          <div style={styles.grid}>
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {savedRooms.map((room) => (
-              <article style={styles.card} key={room.id}>
-                <img src={room.images[0]} alt={room.title} style={styles.image} />
-                <div style={styles.cardBody}>
-                  <h2 style={styles.cardTitle}>{room.title}</h2>
-                  <p style={styles.location}>
+              <article
+                className="overflow-hidden rounded-3xl border border-white/90 bg-white/90 shadow-lg shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-100/60"
+                key={room.id}
+              >
+                <img
+                  src={room.images[0]}
+                  alt={room.title}
+                  className="h-52 w-full object-cover"
+                />
+                <div className="p-5">
+                  <h2 className="text-lg font-black text-slate-950">
+                    {room.title}
+                  </h2>
+                  <p className="mt-2 flex items-center gap-1 text-sm text-slate-500">
                     <MapPin size={14} aria-hidden="true" />
                     {room.area}
                   </p>
-                  <div style={styles.cardFooter}>
-                    <span style={styles.price}>{room.price} / month</span>
-                    <div style={styles.actions}>
-                      <Link href={`/rooms/${room.id}`} style={styles.viewButton}>
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <span className="font-black text-emerald-600">
+                      {room.price} / month
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/rooms/${room.id}`}
+                        className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-xs font-black text-white"
+                      >
                         View Room
                       </Link>
                       <button
                         type="button"
-                        style={styles.removeButton}
                         onClick={() => removeSavedRoom(room.id)}
+                        className="grid h-9 w-9 place-items-center rounded-xl border border-rose-200 bg-rose-50 text-rose-600 transition hover:bg-rose-100"
                         aria-label={`Remove ${room.title} from saved rooms`}
                       >
                         <Trash2 size={15} aria-hidden="true" />
@@ -210,13 +98,22 @@ export default function SavedRoomsPage() {
             ))}
           </div>
         ) : (
-          <div style={styles.empty}>
-            <Heart size={42} style={styles.emptyIcon} aria-hidden="true" />
-            <h2 style={styles.emptyTitle}>No saved rooms yet</h2>
-            <p style={styles.emptyCopy}>
+          <div className="mt-8 rounded-3xl border border-white/90 bg-white/90 px-6 py-16 text-center shadow-lg shadow-slate-200/60">
+            <Heart
+              size={42}
+              className="mx-auto text-rose-500"
+              aria-hidden="true"
+            />
+            <h2 className="mt-4 text-2xl font-black text-slate-950">
+              No saved rooms yet
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
               Save rooms you like and they will appear here.
             </p>
-            <Link href="/dashboard" style={styles.viewButton}>
+            <Link
+              href="/dashboard"
+              className="mt-6 inline-flex rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 text-sm font-black text-white"
+            >
               Browse Properties
             </Link>
           </div>
