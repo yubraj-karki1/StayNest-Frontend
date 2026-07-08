@@ -26,3 +26,9 @@
  GET /profile 200 in 70ms
  ✓ Compiled in 279ms (711 modules)
  GET /profile 200 in 66ms
+ GET /saved 200 in 48ms
+ GET /dashboard 200 in 27ms
+ ○ Compiling /rooms/[id] ...
+ ✓ Compiled /rooms/[id] in 899ms (761 modules)
+ ✓ Compiled in 227ms (295 modules)
+ GET /rooms/2 200 in 1649ms
