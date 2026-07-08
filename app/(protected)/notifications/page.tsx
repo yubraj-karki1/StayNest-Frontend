@@ -63,8 +63,8 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-fixed bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-200">
-      <nav className="flex min-h-[72px] items-center justify-between gap-5 border-b border-slate-900/10 bg-white/75 px-5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/80 sm:px-8 lg:px-12">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-200 sm:bg-fixed">
+      <nav className="flex min-h-[72px] flex-wrap items-center justify-between gap-4 border-b border-slate-900/10 bg-white/75 px-4 py-3 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/80 sm:px-8 lg:px-12">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
@@ -73,7 +73,7 @@ export default function NotificationsPage() {
           <span>StayNest</span>
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-7">
+        <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-7">
           <Link
             href="/saved"
             className="hidden items-center gap-2 text-sm font-black text-slate-900 sm:inline-flex"
@@ -105,7 +105,7 @@ export default function NotificationsPage() {
         </div>
       </nav>
 
-      <section className="mx-auto w-[min(calc(100%-20px),620px)] py-8 sm:py-14">
+      <section className="mx-auto w-full max-w-[620px] px-3 py-8 sm:px-5 sm:py-14">
         <Link
           href="/dashboard"
           className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-700"
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
         </Link>
 
         <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/15">
-          <header className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-5">
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-5">
             <div>
               <h1 className="text-2xl font-black text-slate-800">
                 Notifications
@@ -147,7 +147,7 @@ export default function NotificationsPage() {
                 return (
                   <button
                     type="button"
-                    className="relative grid min-h-32 w-full grid-cols-[46px_minmax(0,1fr)_9px] gap-4 border-b border-slate-200 bg-white px-4 py-5 text-left text-slate-700 transition hover:bg-slate-50"
+                    className="relative grid min-h-32 w-full grid-cols-[40px_minmax(0,1fr)_9px] gap-3 border-b border-slate-200 bg-white px-3 py-5 text-left text-slate-700 transition hover:bg-slate-50 sm:grid-cols-[46px_minmax(0,1fr)_9px] sm:gap-4 sm:px-4"
                     onClick={() => markAsRead(notification.id)}
                     key={notification.id}
                     aria-label={`${notification.title}${

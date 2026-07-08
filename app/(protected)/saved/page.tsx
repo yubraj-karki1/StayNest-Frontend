@@ -12,8 +12,8 @@ export default function SavedRoomsPage() {
   const savedRooms = rooms.filter((room) => savedRoomIds.includes(room.id));
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-fixed bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100">
-      <nav className="flex min-h-[72px] items-center justify-between gap-5 bg-white/70 px-5 backdrop-blur-xl dark:bg-slate-900/80 sm:px-8 lg:px-12">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
+      <nav className="flex min-h-[72px] flex-wrap items-center justify-between gap-4 bg-white/70 px-4 py-3 backdrop-blur-xl dark:bg-slate-900/80 sm:px-8 lg:px-12">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
@@ -21,7 +21,7 @@ export default function SavedRoomsPage() {
           <Home size={23} aria-hidden="true" />
           StayNest
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <ThemeToggle />
           <LogoutButton
             iconSize={13}
@@ -30,7 +30,7 @@ export default function SavedRoomsPage() {
         </div>
       </nav>
 
-      <section className="mx-auto w-[min(1100px,calc(100%-28px))] py-11">
+      <section className="mx-auto w-full max-w-[1100px] px-4 py-11 sm:px-5">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-700"
@@ -56,7 +56,7 @@ export default function SavedRoomsPage() {
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {savedRooms.map((room) => (
               <article
-                className="overflow-hidden rounded-3xl border border-white/90 bg-white/90 shadow-lg shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-100/60"
+                className="min-w-0 overflow-hidden rounded-3xl border border-white/90 bg-white/90 shadow-lg shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-100/60"
                 key={room.id}
               >
                 <img
@@ -72,11 +72,11 @@ export default function SavedRoomsPage() {
                     <MapPin size={14} aria-hidden="true" />
                     {room.area}
                   </p>
-                  <div className="mt-5 flex items-center justify-between gap-3">
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                     <span className="font-black text-emerald-600">
                       {room.price} / month
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Link
                         href={`/rooms/${room.id}`}
                         className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-xs font-black text-white"

@@ -48,8 +48,8 @@ export default async function RoomDetailsPage({
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(rgba(214,221,211,0.72),rgba(214,221,211,0.72)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-fixed bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.84),rgba(2,6,23,0.84)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100">
-      <nav className="flex min-h-[70px] items-center justify-between gap-5 px-5 sm:px-8 lg:px-12">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(214,221,211,0.72),rgba(214,221,211,0.72)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.84),rgba(2,6,23,0.84)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
+      <nav className="flex min-h-[70px] flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-12">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
@@ -58,7 +58,7 @@ export default async function RoomDetailsPage({
           <span>StayNest</span>
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-7">
+        <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-7">
           <Link
             href="/saved"
             className="hidden items-center gap-2 text-sm font-bold text-slate-900 sm:inline-flex"
@@ -89,7 +89,7 @@ export default async function RoomDetailsPage({
         </div>
       </nav>
 
-      <section className="mx-auto w-[min(calc(100%-28px),1120px)] py-6 pb-20">
+      <section className="mx-auto w-full max-w-[1120px] px-4 py-6 pb-20 sm:px-5">
         <Link
           href="/dashboard"
           className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-slate-800 hover:text-emerald-700"
@@ -126,11 +126,11 @@ export default async function RoomDetailsPage({
             </article>
           </div>
 
-          <aside className="sticky top-5 rounded-3xl border border-white/90 bg-white/95 p-6 shadow-2xl shadow-slate-900/15 sm:p-8">
-            <h1 className="text-3xl font-black leading-tight tracking-normal text-slate-950">
+          <aside className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-2xl shadow-slate-900/15 sm:p-8 lg:sticky lg:top-5">
+            <h1 className="break-words text-3xl font-black leading-tight tracking-normal text-slate-950">
               {room.title}
             </h1>
-            <p className="mt-3 flex items-center gap-1 text-sm font-bold text-slate-500">
+            <p className="mt-3 flex min-w-0 items-center gap-1 break-words text-sm font-bold text-slate-500">
               <MapPin size={14} aria-hidden="true" />
               {room.area}, Nepal
             </p>
@@ -197,7 +197,7 @@ export default async function RoomDetailsPage({
         </div>
       </section>
 
-      <footer className="grid grid-cols-1 gap-7 bg-white px-6 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:px-20">
+      <footer className="grid grid-cols-1 gap-7 bg-white px-5 py-8 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-20">
         <section>
           <h2 className="text-2xl font-black text-slate-950">StayNest</h2>
           <p className="mt-3 max-w-xs text-xs leading-6 text-slate-500">
