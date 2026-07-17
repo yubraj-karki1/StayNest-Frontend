@@ -3,11 +3,8 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   Bath,
-  Bell,
   Car,
   CookingPot,
-  Heart,
-  Home,
   MapPin,
   Phone,
   Shirt,
@@ -16,10 +13,9 @@ import {
   User,
   Wifi,
 } from "lucide-react";
-import LogoutButton from "../../../_components/logout-button";
+import AppNav from "../../../_components/app-nav";
 import RequestBookingButton from "../../../_components/request-booking-button";
 import SaveRoomButton from "../../../_components/save-room-button";
-import ThemeToggle from "../../../_components/theme-toggle";
 import { getRoomById, rooms } from "../room-data";
 
 const facilityIcons = {
@@ -49,45 +45,7 @@ export default async function RoomDetailsPage({
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(214,221,211,0.72),rgba(214,221,211,0.72)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.84),rgba(2,6,23,0.84)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
-      <nav className="flex min-h-[70px] flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-12">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
-        >
-          <Home size={23} strokeWidth={2.3} aria-hidden="true" />
-          <span>StayNest</span>
-        </Link>
-
-        <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-7">
-          <Link
-            href="/saved"
-            className="hidden items-center gap-2 text-sm font-bold text-slate-900 sm:inline-flex"
-          >
-            <Heart size={13} aria-hidden="true" />
-            <span>Saved</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="hidden items-center gap-2 text-sm font-bold text-slate-900 sm:inline-flex"
-          >
-            <User size={13} aria-hidden="true" />
-            <span>Profile</span>
-          </Link>
-          <Link
-            href="/notifications"
-            className="relative grid h-8 w-8 place-items-center text-slate-900"
-            aria-label="Notifications"
-          >
-            <Bell size={15} aria-hidden="true" />
-            <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-rose-500" />
-          </Link>
-          <ThemeToggle />
-          <LogoutButton
-            iconSize={13}
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-slate-100"
-          />
-        </div>
-      </nav>
+      <AppNav />
 
       <section className="mx-auto w-full max-w-[1120px] px-4 py-6 pb-20 sm:px-5">
         <Link

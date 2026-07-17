@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Heart, Home, MapPin, Trash2 } from "lucide-react";
-import LogoutButton from "../../_components/logout-button";
-import ThemeToggle from "../../_components/theme-toggle";
+import { ArrowLeft, Heart, MapPin, Trash2 } from "lucide-react";
+import AppNav from "../../_components/app-nav";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { rooms } from "../rooms/room-data";
 
@@ -13,22 +12,7 @@ export default function SavedRoomsPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
-      <nav className="flex min-h-[72px] flex-wrap items-center justify-between gap-4 bg-white/70 px-4 py-3 backdrop-blur-xl dark:bg-slate-900/80 sm:px-8 lg:px-12">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
-        >
-          <Home size={23} aria-hidden="true" />
-          StayNest
-        </Link>
-        <div className="flex flex-wrap items-center justify-end gap-3">
-          <ThemeToggle />
-          <LogoutButton
-            iconSize={13}
-            className="inline-flex items-center gap-2 rounded-full border border-rose-500 px-4 py-2 text-sm font-black text-rose-600 transition hover:bg-rose-50 dark:border-rose-700 dark:text-rose-300 dark:hover:bg-rose-900/20"
-          />
-        </div>
-      </nav>
+      <AppNav />
 
       <section className="mx-auto w-full max-w-[1100px] px-4 py-11 sm:px-5">
         <Link

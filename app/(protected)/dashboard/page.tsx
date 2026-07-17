@@ -2,19 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  Bell,
-  Check,
-  Heart,
-  Home,
-  MapPin,
-  Search,
-  SlidersHorizontal,
-  User,
-} from "lucide-react";
+import { Check, Heart, MapPin, Search, SlidersHorizontal } from "lucide-react";
+import AppNav from "../../_components/app-nav";
 import SavedRoomToast from "../../_components/saved-room-toast";
-import ThemeToggle from "../../_components/theme-toggle";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { rooms, type Room } from "../rooms/room-data";
 
@@ -116,7 +106,6 @@ function RoomCard({
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const listingsRef = useRef<HTMLElement>(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -188,40 +177,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-black dark:bg-slate-950 dark:text-slate-100">
       <section className="relative bg-[linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center pb-16 sm:pb-20 lg:bg-fixed">
-        <nav className="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/10 px-5 py-4 text-white backdrop-blur-xl sm:px-7 lg:px-8">
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-2 text-2xl font-black"
-          >
-            <Home size={26} strokeWidth={2.3} aria-hidden="true" />
-            StayNest
-          </button>
-
-          <div className="flex flex-wrap items-center justify-end gap-4 text-base font-bold sm:gap-7">
-            <Link href="/dashboard" className="inline-flex items-center gap-1.5">
-              <Home size={14} aria-hidden="true" />
-              Home
-            </Link>
-            <Link href="/saved" className="inline-flex items-center gap-1.5">
-              <Heart size={14} aria-hidden="true" />
-              Saved
-            </Link>
-            <Link href="/profile" className="inline-flex items-center gap-1.5">
-              <User size={14} aria-hidden="true" />
-              Profile
-            </Link>
-            <Link
-              href="/notifications"
-              className="relative inline-flex items-center"
-              aria-label="Notifications"
-            >
-              <Bell size={15} aria-hidden="true" />
-              <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-red-500" />
-            </Link>
-            <ThemeToggle />
-          </div>
-        </nav>
+        <AppNav variant="hero" />
 
         <section className="mx-auto mt-10 w-full max-w-[640px] px-4 text-center sm:mt-14 lg:mt-16">
           <h1 className="text-[clamp(2.25rem,9vw,3rem)] font-black leading-[1.1] tracking-tight text-white">

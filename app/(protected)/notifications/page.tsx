@@ -2,18 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Bell,
-  Heart,
-  Home,
-  House,
-  Star,
-  TrendingDown,
-  User,
-} from "lucide-react";
-import LogoutButton from "../../_components/logout-button";
-import ThemeToggle from "../../_components/theme-toggle";
+import { ArrowLeft, Bell, Home, House, Star, TrendingDown } from "lucide-react";
+import AppNav from "../../_components/app-nav";
 import { apiRequest } from "../../_lib/api";
 
 type Notification = {
@@ -64,46 +54,7 @@ export default function NotificationsPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-200 sm:bg-fixed">
-      <nav className="flex min-h-[72px] flex-wrap items-center justify-between gap-4 border-b border-slate-900/10 bg-white/75 px-4 py-3 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/80 sm:px-8 lg:px-12">
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 text-xl font-black text-slate-900"
-        >
-          <Home size={24} strokeWidth={2.4} aria-hidden="true" />
-          <span>StayNest</span>
-        </Link>
-
-        <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-7">
-          <Link
-            href="/saved"
-            className="hidden items-center gap-2 text-sm font-black text-slate-900 sm:inline-flex"
-          >
-            <Heart size={14} aria-hidden="true" />
-            <span>Saved</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="hidden items-center gap-2 text-sm font-black text-slate-900 sm:inline-flex"
-          >
-            <User size={14} aria-hidden="true" />
-            <span>Profile</span>
-          </Link>
-          <span
-            className="relative grid h-8 w-8 place-items-center text-emerald-600"
-            aria-label="Notifications"
-          >
-            <Bell size={17} aria-hidden="true" />
-            {unreadIds.length > 0 && (
-              <span className="absolute right-1 top-1 h-2 w-2 rounded-full border-2 border-white bg-rose-500" />
-            )}
-          </span>
-          <ThemeToggle />
-          <LogoutButton
-            iconSize={14}
-            className="inline-flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100"
-          />
-        </div>
-      </nav>
+      <AppNav unreadCount={unreadIds.length} />
 
       <section className="mx-auto w-full max-w-[620px] px-3 py-8 sm:px-5 sm:py-14">
         <Link

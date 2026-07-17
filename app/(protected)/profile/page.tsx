@@ -19,8 +19,8 @@ import {
   ShieldCheck,
   Star,
 } from "lucide-react";
+import AppNav from "../../_components/app-nav";
 import LogoutButton from "../../_components/logout-button";
-import ThemeToggle from "../../_components/theme-toggle";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { apiRequest, type UserProfile } from "../../_lib/api";
 
@@ -107,10 +107,9 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <AppNav />
+
       <section className="bg-gradient-to-r from-slate-600 via-slate-400 to-indigo-200 px-5 py-10 text-white dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 sm:px-8 lg:px-16">
-        <div className="mx-auto mb-6 flex w-[min(1160px,100%)] justify-end">
-          <ThemeToggle />
-        </div>
         <div className="mx-auto flex w-[min(1160px,100%)] flex-wrap items-end justify-between gap-7">
           <div className="flex min-w-0 flex-wrap items-center gap-6">
             <div className="relative h-28 w-28 flex-none rotate-2 rounded-2xl border-4 border-white bg-slate-200 shadow-xl shadow-slate-900/25 dark:border-slate-700 dark:bg-slate-800">
