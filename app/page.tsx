@@ -22,11 +22,11 @@ export default function Page() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-slate-200 text-slate-950">
-      <nav className="relative z-10 flex min-h-16 flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+    <main className="relative min-h-screen overflow-x-hidden bg-slate-950 text-white">
+      <nav className="absolute inset-x-0 top-0 z-10 flex min-h-16 flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-8 lg:px-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xl font-black text-black"
+          className="inline-flex items-center gap-2 text-xl font-black text-white"
         >
           <Home size={24} strokeWidth={2.2} aria-hidden="true" />
           <span>StayNest</span>
@@ -35,61 +35,58 @@ export default function Page() {
         <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-6">
           <Link
             href="/saved"
-            className="hidden items-center gap-1 text-sm font-black text-black sm:inline-flex"
+            className="hidden items-center gap-1.5 text-sm font-bold text-white/90 transition hover:text-white sm:inline-flex"
           >
             <Heart size={16} strokeWidth={2.1} aria-hidden="true" />
             <span>Saved</span>
           </Link>
           <Link
             href="/profile"
-            className="hidden items-center gap-1 text-sm font-black text-black sm:inline-flex"
+            className="hidden items-center gap-1.5 text-sm font-bold text-white/90 transition hover:text-white sm:inline-flex"
           >
             <User size={16} strokeWidth={2.1} aria-hidden="true" />
             <span>Profile</span>
           </Link>
           <Link
             href="/notifications"
-            className="grid h-8 w-8 place-items-center rounded-full text-black transition hover:bg-white/50"
+            className="grid h-9 w-9 place-items-center rounded-full text-white/90 transition hover:bg-white/15"
             aria-label="Notifications"
           >
             <Bell size={18} aria-hidden="true" />
           </Link>
           <Link
             href="/login"
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-[#4d82de] px-4 text-sm font-black text-black shadow-sm transition hover:bg-[#3f74d0] sm:px-6"
+            className="inline-flex h-10 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 text-sm font-black text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-teal-600"
           >
             Sign In
           </Link>
         </div>
       </nav>
 
-      <section className="-mt-16 flex min-h-screen items-start justify-center bg-[linear-gradient(rgba(255,255,255,0.22),rgba(255,255,255,0.05)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center px-4 pb-11 pt-[108px] sm:px-5">
-        <div className="w-full max-w-[650px] text-center">
-          <h1 className="text-[34px] font-normal leading-[1.08] tracking-normal text-[#435027] drop-shadow-[0_1px_16px_rgba(255,255,255,0.45)] sm:text-[36px]">
+      <section className="flex min-h-screen items-center justify-center bg-[linear-gradient(rgba(2,6,23,0.5),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center px-4 py-28 sm:px-6">
+        <div className="w-full max-w-[640px] text-center">
+          <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl">
             Find Your Perfect
             <br />
             Room Easily
           </h1>
-          <p className="mx-auto mt-2 max-w-[430px] text-[13px] font-medium leading-[1.2] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
+          <p className="mx-auto mt-5 max-w-[440px] text-base font-medium leading-relaxed text-white/85 sm:text-lg">
             Discover affordable rooms and hostels near your campus. Compare
-            <br />
-            prices, check facilities and
-            <br />
-            more in hassle-free.
+            prices, check facilities and more in hassle-free.
           </p>
 
           <form
             onSubmit={handleSearch}
-            className="mx-auto mt-[54px] grid w-full max-w-[424px] grid-cols-1 items-center gap-2 rounded-md border border-white/80 bg-white p-2 shadow-2xl shadow-slate-900/20 sm:grid-cols-[minmax(0,1fr)_102px_98px]"
+            className="mx-auto mt-10 grid w-full max-w-[560px] grid-cols-1 items-center gap-2.5 rounded-2xl bg-white p-2.5 shadow-2xl shadow-black/40 sm:grid-cols-[minmax(0,1fr)_150px_auto]"
           >
-            <label className="flex h-9 min-w-0 items-center gap-1.5 rounded-md bg-[#dedede] px-3 text-neutral-500">
-              <MapPin size={16} strokeWidth={2} aria-hidden="true" />
+            <label className="flex h-12 min-w-0 items-center gap-2 rounded-xl bg-slate-100 px-4 text-slate-400">
+              <MapPin size={18} strokeWidth={2} aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Enter location or area...."
+                placeholder="Enter location or area..."
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
-                className="min-w-0 flex-1 bg-transparent text-sm font-normal text-neutral-700 outline-none placeholder:text-neutral-500"
+                className="min-w-0 flex-1 bg-transparent text-base font-medium text-slate-700 outline-none placeholder:text-slate-400"
               />
             </label>
 
@@ -97,7 +94,7 @@ export default function Page() {
               aria-label="Price range"
               value={price}
               onChange={(event) => setPrice(event.target.value)}
-              className="h-9 cursor-pointer rounded-md border-0 bg-[#dedede] px-2 text-base font-normal text-neutral-600 outline-none"
+              className="h-12 cursor-pointer rounded-xl border-0 bg-slate-100 px-3 text-base font-medium text-slate-600 outline-none"
             >
               <option value="any">Any Price</option>
               <option value="low">Under Rs. 8,000</option>
@@ -107,9 +104,9 @@ export default function Page() {
 
             <button
               type="submit"
-              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-[#dedede] px-3 text-lg font-normal text-neutral-600 transition hover:bg-[#d3d3d3]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 text-base font-black text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-teal-600"
             >
-              <Search size={19} aria-hidden="true" />
+              <Search size={18} aria-hidden="true" />
               <span>Search</span>
             </button>
           </form>

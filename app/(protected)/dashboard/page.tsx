@@ -33,67 +33,70 @@ function RoomCard({
   onToggleSaved: () => void;
 }) {
   return (
-    <article className="min-w-0 overflow-hidden rounded-lg bg-white shadow-xl shadow-slate-950/20 dark:bg-slate-900 dark:shadow-slate-950/40">
-      <div className="relative h-[110px] lg:h-[104px]">
+    <article className="group min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/40">
+      <div className="relative h-48 overflow-hidden">
         <Link href={`/rooms/${room.id}`}>
           <img
             src={room.images[0]}
             alt={room.title}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
           />
         </Link>
 
-        <span className="absolute left-3 top-2 rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase text-slate-700 dark:bg-slate-950 dark:text-slate-100">
+        <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-slate-700 shadow dark:bg-slate-950/90 dark:text-slate-100">
           {room.status}
         </span>
 
         <button
           type="button"
           onClick={onToggleSaved}
-          className={`absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full shadow ${
+          className={`absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full shadow transition ${
             isSaved
-              ? "bg-[#4d82de] text-white"
-              : "bg-white text-slate-500 dark:bg-slate-950 dark:text-slate-200"
+              ? "bg-rose-500 text-white"
+              : "bg-white/95 text-slate-500 hover:text-rose-500 dark:bg-slate-950/90 dark:text-slate-200"
           }`}
           aria-label={`${isSaved ? "Remove" : "Save"} ${room.title}`}
           aria-pressed={isSaved}
         >
           <Heart
-            size={12}
+            size={15}
             fill={isSaved ? "currentColor" : "none"}
             aria-hidden="true"
           />
         </button>
 
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-2 pb-2 pt-9 text-white">
-          <p className="text-[8px] font-bold uppercase tracking-wide">
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pb-3 pt-12 text-white">
+          <p className="text-xs font-bold uppercase tracking-wide text-white/80">
             {room.area.split(",")[0]}, Nepal
           </p>
-          <h3 className="line-clamp-1 text-[13px] font-black leading-tight">
+          <h3 className="line-clamp-1 text-lg font-black leading-tight">
             {room.title}
           </h3>
         </div>
       </div>
 
-      <div className="p-2">
-        <div className="flex min-h-7 flex-wrap gap-1">
+      <div className="p-4">
+        <div className="flex min-h-7 flex-wrap gap-1.5">
           {room.facilities.slice(0, 3).map((facility) => (
             <span
               key={facility}
-              className="rounded-sm bg-[#edf2fb] px-1.5 py-1 text-[7px] font-black uppercase text-slate-500 dark:bg-slate-800 dark:text-slate-300"
+              className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
             >
               {facility}
             </span>
           ))}
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-300">
-            {room.price}/month
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className="text-sm font-black text-slate-700 dark:text-slate-200">
+            {room.price}
+            <span className="font-medium text-slate-400 dark:text-slate-400">
+              /month
+            </span>
           </span>
           <Link
             href={`/rooms/${room.id}`}
-            className="rounded-sm bg-[#4d82de] px-2 py-1 text-[8px] font-black text-white"
+            className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-xs font-black text-white shadow transition hover:from-emerald-600 hover:to-teal-600"
           >
             Book Now
           </Link>
@@ -259,10 +262,10 @@ export default function DashboardPage() {
         >
           <aside className="lg:sticky lg:top-4">
             <h2 className="mb-4 text-base font-black dark:text-white">Filters</h2>
-            <div className="rounded-xl bg-white p-5 shadow-xl shadow-slate-950/15 dark:bg-slate-900/95 dark:shadow-slate-950/40">
+            <div className="rounded-2xl bg-white p-5 shadow-xl shadow-slate-950/15 dark:bg-slate-900/95 dark:shadow-slate-950/40">
               <label
                 htmlFor="maximum-price"
-                className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500"
+                className="text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500"
               >
                 Price Range
               </label>
@@ -274,27 +277,27 @@ export default function DashboardPage() {
                 step="500"
                 value={maxPrice}
                 onChange={(event) => setMaxPrice(Number(event.target.value))}
-                className="mt-5 w-full accent-[#4d82de]"
+                className="mt-5 w-full accent-emerald-500"
               />
-              <div className="mt-3 flex items-center justify-between text-[9px] font-black dark:text-slate-100">
+              <div className="mt-3 flex items-center justify-between text-xs font-black text-slate-700 dark:text-slate-100">
                 <span>Rs. 0</span>
                 <span>Rs. {maxPrice.toLocaleString()}+</span>
               </div>
 
-              <span className="mt-6 block text-[8px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
+              <span className="mt-6 block text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">
                 Room Type
               </span>
               <div className="mt-3 grid gap-2.5">
                 {roomTypes.map((roomType) => (
                   <label
                     key={roomType.value}
-                    className="flex items-center gap-2 text-[11px] font-medium text-slate-700 dark:text-slate-200"
+                    className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200"
                   >
                     <input
                       type="checkbox"
                       checked={selectedRoomTypes.includes(roomType.value)}
                       onChange={() => toggleRoomType(roomType.value)}
-                      className="h-3 w-3 accent-black dark:accent-[#4d82de]"
+                      className="h-3.5 w-3.5 accent-emerald-500"
                     />
                     <span>{roomType.label}</span>
                   </label>
@@ -305,11 +308,11 @@ export default function DashboardPage() {
 
           <section>
             <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-lg font-black dark:text-white">Features Properties</h2>
-              <label className="flex h-8 items-center gap-2 rounded-md bg-white px-4 text-[9px] shadow dark:bg-slate-900 dark:shadow-slate-950/30">
+              <h2 className="text-lg font-black dark:text-white">Featured Properties</h2>
+              <label className="flex h-9 items-center gap-2 rounded-xl bg-white px-4 text-xs shadow dark:bg-slate-900 dark:shadow-slate-950/30">
                 <span className="text-slate-400">Sort by:</span>
                 <select
-                  className="bg-transparent text-[9px] font-black text-orange-500 outline-none dark:text-orange-300"
+                  className="bg-transparent text-xs font-black text-emerald-600 outline-none dark:text-emerald-300"
                   aria-label="Sort properties"
                   defaultValue="newest"
                 >
