@@ -140,7 +140,7 @@ export default async function RoomDetailsPage({
               </span>
             </div>
 
-            <RequestBookingButton roomId={room.id} />
+            <RequestBookingButton roomId={room.id} ownerName={room.owner} />
             <a
               href={`tel:${room.ownerPhone}`}
               className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-500 bg-white text-sm font-black text-emerald-600 transition hover:bg-emerald-50"

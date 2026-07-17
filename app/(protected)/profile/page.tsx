@@ -372,9 +372,9 @@ export default function ProfilePage() {
                 <ChevronRight size={16} aria-hidden="true" />
               </Link>
 
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-lg shadow-slate-200/50 transition hover:-translate-y-0.5 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/40 dark:hover:bg-slate-800"
+              <div
+                className="flex items-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 opacity-70 dark:border-slate-700 dark:bg-slate-900/60"
+                aria-disabled="true"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
                   <RotateCcw size={16} aria-hidden="true" />
@@ -387,8 +387,10 @@ export default function ProfilePage() {
                     Past and upcoming trips
                   </span>
                 </span>
-                <ChevronRight size={16} aria-hidden="true" />
-              </Link>
+                <span className="rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  Soon
+                </span>
+              </div>
 
               <LogoutButton
                 iconSize={16}
