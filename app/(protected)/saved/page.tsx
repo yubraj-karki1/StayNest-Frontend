@@ -1,13 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Heart, MapPin, Trash2 } from "lucide-react";
 import AppNav from "../../_components/app-nav";
+import SafeRoomImage from "../../_components/safe-room-image";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
-import { rooms } from "../rooms/room-data";
+import { apiRequest, type Room } from "../../_lib/api";
 
 export default function SavedRoomsPage() {
   const { savedRoomIds, isLoaded, removeSavedRoom } = useSavedRooms();
+  const [rooms, setRooms] = useState<Room[]>([]);
+
+  useEffect(() => {
+    apiRequest<{ rooms: Room[] }>("/rooms")
+      .then(({ rooms: items }) => setRooms(items))
+      .catch(() => setRooms([]));
+  }, []);
+
   const savedRooms = rooms.filter((room) => savedRoomIds.includes(room.id));
 
   return (
@@ -43,11 +53,15 @@ export default function SavedRoomsPage() {
                 className="min-w-0 overflow-hidden rounded-3xl border border-white/90 bg-white/90 shadow-lg shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-100/60"
                 key={room.id}
               >
-                <img
-                  src={room.images[0]}
-                  alt={room.title}
-                  className="h-52 w-full object-cover"
-                />
+                <div className="relative h-52 w-full">
+                  <SafeRoomImage
+                    src={room.images[0]}
+                    alt={room.title}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="p-5">
                   <h2 className="text-lg font-black text-slate-950">
                     {room.title}

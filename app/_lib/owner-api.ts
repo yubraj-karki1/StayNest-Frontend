@@ -1,76 +1,46 @@
 const API_URL = "/api";
-const TOKEN_KEY = "staynest-token";
+const OWNER_TOKEN_KEY = "staynest-owner-token";
 
-export type UserProfile = {
+export type OwnerProfile = {
   uid: string;
   fullName: string;
   email: string;
   contactNo: string;
   location: string;
   about: string;
-  role: "admin" | "owner" | "user";
+  role: "owner";
   createdAt: string;
   updatedAt: string;
 };
 
-export type RoomType = "single" | "shared" | "hostel";
-
-export type Room = {
-  id: string;
-  ownerUid: string;
-  owner: string;
-  ownerPhone: string;
-  status: RoomType;
-  title: string;
-  area: string;
-  price: string;
-  rating: string;
-  reviews: number;
-  facilities: string[];
-  description: string;
-  images: string[];
-};
-
-export type BookingStatus = "pending" | "confirmed" | "cancelled";
-
-export type Booking = {
-  _id: string;
-  userUid: string;
-  roomId: string;
-  roomTitle: string;
-  ownerUid: string;
-  message: string;
-  status: BookingStatus;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export function getToken() {
+export function getOwnerToken() {
   return typeof window === "undefined"
     ? null
-    : window.localStorage.getItem(TOKEN_KEY);
+    : window.localStorage.getItem(OWNER_TOKEN_KEY);
 }
 
-export function setToken(token: string) {
-  window.localStorage.setItem(TOKEN_KEY, token);
+export function setOwnerToken(token: string) {
+  window.localStorage.setItem(OWNER_TOKEN_KEY, token);
 }
 
-export function clearToken() {
-  window.localStorage.removeItem(TOKEN_KEY);
+export function clearOwnerToken() {
+  window.localStorage.removeItem(OWNER_TOKEN_KEY);
 }
 
-export async function apiRequest<T>(
+export async function ownerApiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = getToken();
+  const token = getOwnerToken();
   let response: Response;
 
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...options,
       headers: {
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.body && !(options.body instanceof FormData)
+          ? { "Content-Type": "application/json" }
+          : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },

@@ -6,7 +6,7 @@ import SavedRoomToast from "./saved-room-toast";
 import { useSavedRooms } from "./use-saved-rooms";
 
 type SaveRoomButtonProps = {
-  roomId: number;
+  roomId: string;
   className?: string;
 };
 

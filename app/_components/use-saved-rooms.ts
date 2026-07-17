@@ -6,12 +6,12 @@ import { apiRequest } from "../_lib/api";
 const SAVED_ROOMS_EVENT = "staynest-saved-rooms-changed";
 
 export function useSavedRooms() {
-  const [savedRoomIds, setSavedRoomIds] = useState<number[]>([]);
+  const [savedRoomIds, setSavedRoomIds] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const loadSavedRooms = useCallback(async () => {
     try {
-      const result = await apiRequest<{ roomIds: number[] }>("/saved-rooms");
+      const result = await apiRequest<{ roomIds: string[] }>("/saved-rooms");
       setSavedRoomIds(result.roomIds);
     } catch {
       setSavedRoomIds([]);
@@ -27,7 +27,7 @@ export function useSavedRooms() {
     return () => window.removeEventListener(SAVED_ROOMS_EVENT, sync);
   }, [loadSavedRooms]);
 
-  const toggleSavedRoom = useCallback(async (roomId: number) => {
+  const toggleSavedRoom = useCallback(async (roomId: string) => {
     setSavedRoomIds((current) =>
       current.includes(roomId)
         ? current.filter((savedId) => savedId !== roomId)
@@ -41,7 +41,7 @@ export function useSavedRooms() {
     }
   }, [loadSavedRooms]);
 
-  const removeSavedRoom = useCallback(async (roomId: number) => {
+  const removeSavedRoom = useCallback(async (roomId: string) => {
     setSavedRoomIds((current) => current.filter((savedId) => savedId !== roomId));
     try {
       await apiRequest(`/saved-rooms/${roomId}`, { method: "DELETE" });

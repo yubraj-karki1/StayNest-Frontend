@@ -1,5 +1,7 @@
+"use client";
+
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   Bath,
@@ -15,10 +17,11 @@ import {
 } from "lucide-react";
 import AppNav from "../../../_components/app-nav";
 import RequestBookingButton from "../../../_components/request-booking-button";
+import SafeRoomImage from "../../../_components/safe-room-image";
 import SaveRoomButton from "../../../_components/save-room-button";
-import { getRoomById, rooms } from "../room-data";
+import { apiRequest, type Room } from "../../../_lib/api";
 
-const facilityIcons = {
+const facilityIcons: Record<string, typeof Wifi> = {
   WiFi: Wifi,
   Kitchen: CookingPot,
   Parking: Car,
@@ -27,20 +30,47 @@ const facilityIcons = {
   Balcony: Sun,
 };
 
-export function generateStaticParams() {
-  return rooms.map((room) => ({ id: String(room.id) }));
-}
-
-export default async function RoomDetailsPage({
+export default function RoomDetailsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const room = getRoomById(id);
+  const { id } = use(params);
+  const [room, setRoom] = useState<Room | null | undefined>(undefined);
 
-  if (!room) {
-    notFound();
+  useEffect(() => {
+    apiRequest<{ room: Room }>(`/rooms/${id}`)
+      .then(({ room: item }) => setRoom(item))
+      .catch(() => setRoom(null));
+  }, [id]);
+
+  if (room === undefined) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-50 dark:bg-slate-950">
+        <p className="text-sm font-bold text-slate-500 dark:text-slate-300">
+          Loading room...
+        </p>
+      </main>
+    );
+  }
+
+  if (room === null) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-50 text-center dark:bg-slate-950">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+            Room not found
+          </h1>
+          <Link
+            href="/dashboard"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700"
+          >
+            <ArrowLeft size={14} aria-hidden="true" />
+            Back to listings
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -59,18 +89,29 @@ export default async function RoomDetailsPage({
         <div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1fr)_390px]">
           <div className="grid gap-6">
             <div className="grid grid-cols-3 gap-2">
-              <img
-                src={room.images[0]}
-                alt={room.title}
-                className="col-span-3 h-[clamp(260px,42vw,430px)] w-full rounded-2xl object-cover shadow-xl shadow-slate-900/15"
-              />
-              {room.images.slice(1).map((image, index) => (
-                <img
-                  src={image}
-                  alt={`Room view ${index + 2}`}
-                  className="h-[clamp(70px,13vw,125px)] w-full rounded-xl object-cover shadow-lg shadow-slate-900/10"
-                  key={image}
+              <div className="relative col-span-3 h-[clamp(260px,42vw,430px)] w-full overflow-hidden rounded-2xl shadow-xl shadow-slate-900/15">
+                <SafeRoomImage
+                  src={room.images[0]}
+                  alt={room.title}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 700px, 100vw"
+                  className="object-cover"
                 />
+              </div>
+              {room.images.slice(1).map((image, index) => (
+                <div
+                  key={image}
+                  className="relative h-[clamp(70px,13vw,125px)] w-full overflow-hidden rounded-xl shadow-lg shadow-slate-900/10"
+                >
+                  <SafeRoomImage
+                    src={image}
+                    alt={`Room view ${index + 2}`}
+                    fill
+                    sizes="150px"
+                    className="object-cover"
+                  />
+                </div>
               ))}
             </div>
 
@@ -109,7 +150,7 @@ export default async function RoomDetailsPage({
             </span>
             <div className="mb-6 mt-3 flex flex-wrap gap-2">
               {room.facilities.map((facility) => {
-                const FacilityIcon = facilityIcons[facility];
+                const FacilityIcon = facilityIcons[facility] ?? Star;
 
                 return (
                   <span

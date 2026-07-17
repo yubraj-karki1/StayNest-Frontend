@@ -2,15 +2,20 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { apiRequest, clearToken } from "../_lib/api";
+import { apiRequest, clearToken, type UserProfile } from "../_lib/api";
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    apiRequest("/profile")
-      .then(() => setIsAuthorized(true))
+    apiRequest<{ user: UserProfile }>("/profile")
+      .then(({ user }) => {
+        if (user.role === "owner") {
+          throw new Error("Owner accounts must use the owner dashboard");
+        }
+        setIsAuthorized(true);
+      })
       .catch(() => {
         clearToken();
         router.replace("/login");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CircleHelp, Home, LockKeyhole } from "lucide-react";
@@ -63,10 +64,13 @@ export default function LoginForm() {
 
       <section className="mx-auto grid min-h-[calc(100vh-72px)] w-[min(1120px,calc(100%-48px))] grid-cols-1 items-center gap-10 pb-10 lg:grid-cols-2 lg:gap-20">
         <aside className="relative min-h-[360px] overflow-hidden rounded-3xl bg-slate-200 shadow-xl shadow-slate-200/70 lg:min-h-[calc(100vh-144px)]">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=90"
             alt="StayNest bunk bed room"
-            className="h-full min-h-[inherit] w-full object-cover"
+            fill
+            priority
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,_rgba(8,12,9,0.76),_rgba(8,12,9,0.16)_58%,_transparent),linear-gradient(to_right,_rgba(8,12,9,0.22),_transparent_48%)]" />
 
@@ -165,6 +169,12 @@ export default function LoginForm() {
             Don&apos;t have an account?{" "}
             <Link href="/register" className="font-black text-emerald-600">
               Create one
+            </Link>
+          </p>
+          <p className="mt-2 text-center text-sm font-bold text-slate-500">
+            Own a property?{" "}
+            <Link href="/owner/login" className="font-black text-indigo-600">
+              Owner login
             </Link>
           </p>
         </form>

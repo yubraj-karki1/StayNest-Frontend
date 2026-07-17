@@ -10,7 +10,7 @@ export default function RequestBookingButton({
   ownerName,
   className = "",
 }: {
-  roomId: number;
+  roomId: string;
   ownerName?: string;
   className?: string;
 }) {

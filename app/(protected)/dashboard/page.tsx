@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Check, Heart, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import AppNav from "../../_components/app-nav";
+import SafeRoomImage from "../../_components/safe-room-image";
 import SavedRoomToast from "../../_components/saved-room-toast";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
-import { rooms, type Room } from "../rooms/room-data";
+import { apiRequest, type Room } from "../../_lib/api";
 
 const MAX_PRICE = 50000;
 
@@ -34,11 +35,13 @@ function RoomCard({
   return (
     <article className="group min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/40">
       <div className="relative h-48 overflow-hidden">
-        <Link href={`/rooms/${room.id}`}>
-          <img
+        <Link href={`/rooms/${room.id}`} className="absolute inset-0 block">
+          <SafeRoomImage
             src={room.images[0]}
             alt={room.title}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            fill
+            sizes="(min-width: 1280px) 380px, (min-width: 640px) 45vw, 100vw"
+            className="object-cover transition duration-300 group-hover:scale-105"
           />
         </Link>
 
@@ -64,7 +67,7 @@ function RoomCard({
           />
         </button>
 
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pb-3 pt-12 text-white">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pb-3 pt-12 text-white">
           <p className="text-xs font-bold uppercase tracking-wide text-white/80">
             {room.area.split(",")[0]}, Nepal
           </p>
@@ -112,7 +115,16 @@ export default function DashboardPage() {
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<RoomType[]>([]);
   const [toastMessage, setToastMessage] = useState("");
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [isLoadingRooms, setIsLoadingRooms] = useState(true);
   const { savedRoomIds, toggleSavedRoom } = useSavedRooms();
+
+  useEffect(() => {
+    apiRequest<{ rooms: Room[] }>("/rooms")
+      .then(({ rooms: items }) => setRooms(items))
+      .catch(() => setRooms([]))
+      .finally(() => setIsLoadingRooms(false));
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -150,7 +162,7 @@ export default function DashboardPage() {
 
       return matchesPrice && matchesRoomType && matchesSearch;
     });
-  }, [maxPrice, searchQuery, selectedRoomTypes]);
+  }, [maxPrice, rooms, searchQuery, selectedRoomTypes]);
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -325,7 +337,13 @@ export default function DashboardPage() {
             </label>
           </div>
 
-          {filteredRooms.length > 0 ? (
+          {isLoadingRooms ? (
+            <div className="rounded-xl bg-white/90 px-6 py-12 text-center shadow-xl dark:bg-slate-900/90 dark:shadow-slate-950/40">
+              <p className="text-sm font-bold text-slate-500 dark:text-slate-300">
+                Loading properties...
+              </p>
+            </div>
+          ) : filteredRooms.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {filteredRooms.map((room) => (
                 <RoomCard
