@@ -3,7 +3,16 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Heart, Home, MapPin, Search, User } from "lucide-react";
+import {
+  Bell,
+  Check,
+  Heart,
+  Home,
+  MapPin,
+  Search,
+  SlidersHorizontal,
+  User,
+} from "lucide-react";
 import SavedRoomToast from "../../_components/saved-room-toast";
 import ThemeToggle from "../../_components/theme-toggle";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
@@ -178,8 +187,8 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-black dark:bg-slate-950 dark:text-slate-100">
-      <section className="min-h-screen bg-[linear-gradient(rgba(219,226,220,0.42),rgba(219,226,220,0.42)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center dark:bg-[linear-gradient(rgba(2,6,23,0.72),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=90')] lg:bg-fixed">
-        <nav className="flex min-h-16 flex-wrap items-center justify-between gap-4 px-5 py-4 text-black dark:text-slate-100 sm:px-7 lg:px-8">
+      <section className="relative bg-[linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center pb-16 sm:pb-20 lg:bg-fixed">
+        <nav className="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/10 px-5 py-4 text-white backdrop-blur-xl sm:px-7 lg:px-8">
           <button
             type="button"
             onClick={() => router.push("/dashboard")}
@@ -189,16 +198,16 @@ export default function DashboardPage() {
             StayNest
           </button>
 
-          <div className="flex flex-wrap items-center justify-end gap-4 text-base font-medium sm:gap-7">
-            <Link href="/dashboard" className="inline-flex items-center gap-1">
+          <div className="flex flex-wrap items-center justify-end gap-4 text-base font-bold sm:gap-7">
+            <Link href="/dashboard" className="inline-flex items-center gap-1.5">
               <Home size={14} aria-hidden="true" />
               Home
             </Link>
-            <Link href="/saved" className="inline-flex items-center gap-1">
+            <Link href="/saved" className="inline-flex items-center gap-1.5">
               <Heart size={14} aria-hidden="true" />
               Saved
             </Link>
-            <Link href="/profile" className="inline-flex items-center gap-1">
+            <Link href="/profile" className="inline-flex items-center gap-1.5">
               <User size={14} aria-hidden="true" />
               Profile
             </Link>
@@ -214,11 +223,11 @@ export default function DashboardPage() {
           </div>
         </nav>
 
-        <section className="mx-auto mt-8 w-full max-w-[640px] px-4 text-center sm:mt-10 lg:mt-8">
-          <h1 className="text-[clamp(2rem,9vw,2.625rem)] font-normal leading-none tracking-normal text-black dark:text-white">
+        <section className="mx-auto mt-10 w-full max-w-[640px] px-4 text-center sm:mt-14 lg:mt-16">
+          <h1 className="text-[clamp(2.25rem,9vw,3rem)] font-black leading-[1.1] tracking-tight text-white">
             Find Your Perfect Room
           </h1>
-          <p className="mx-auto mt-2 max-w-[420px] text-sm font-medium leading-[1.25] text-black dark:text-slate-200">
+          <p className="mx-auto mt-3 max-w-[420px] text-base font-medium leading-relaxed text-white/85">
             Discover verified accommodations from trusted hosts.
             <br />
             Book securely with confidence.
@@ -226,21 +235,21 @@ export default function DashboardPage() {
 
           <form
             onSubmit={handleSearch}
-            className="mx-auto mt-6 grid w-full max-w-[530px] grid-cols-1 gap-3 rounded-xl bg-white/80 p-3 shadow-xl dark:bg-slate-900/80 dark:shadow-slate-950/40 sm:grid-cols-[minmax(0,1fr)_145px] lg:mt-5"
+            className="mx-auto mt-8 grid w-full max-w-[530px] grid-cols-1 gap-2.5 rounded-2xl bg-white p-2.5 shadow-2xl shadow-black/40 dark:bg-slate-900 sm:grid-cols-[minmax(0,1fr)_150px]"
           >
-            <label className="flex h-10 items-center gap-2 rounded-md bg-white px-4 text-slate-400 dark:bg-slate-950 dark:text-slate-400">
-              <MapPin size={15} aria-hidden="true" />
+            <label className="flex h-12 items-center gap-2 rounded-xl bg-slate-100 px-4 text-slate-400 dark:bg-slate-950 dark:text-slate-400">
+              <MapPin size={17} aria-hidden="true" />
               <input
                 type="search"
                 placeholder="City or area..."
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                className="min-w-0 flex-1 bg-transparent text-base text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-100"
+                className="min-w-0 flex-1 bg-transparent text-base font-medium text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-100"
               />
             </label>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-white px-4 text-base font-normal text-slate-700 transition hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-800"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 text-base font-black text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-teal-600"
             >
               <Search size={17} aria-hidden="true" />
               Search
@@ -250,110 +259,146 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={exploreAllProperties}
-            className="mt-6 h-10 w-full max-w-[300px] rounded-md bg-white px-4 text-base font-normal text-black shadow dark:bg-slate-950 dark:text-slate-100 dark:shadow-slate-950/40 lg:mt-5"
+            className="mt-4 h-11 w-full max-w-[300px] rounded-xl bg-white/95 px-4 text-sm font-black text-slate-800 shadow-lg transition hover:bg-white dark:bg-slate-900/90 dark:text-slate-100 dark:hover:bg-slate-800"
           >
             Explore all Properties
           </button>
         </section>
+      </section>
 
-        <section
-          ref={listingsRef}
-          className="mx-auto mt-8 grid w-full max-w-[1210px] grid-cols-1 gap-6 px-4 pb-12 sm:px-5 lg:mt-8 lg:grid-cols-[180px_minmax(0,1fr)] lg:items-start xl:max-w-[1260px]"
-        >
-          <aside className="lg:sticky lg:top-4">
-            <h2 className="mb-4 text-base font-black dark:text-white">Filters</h2>
-            <div className="rounded-2xl bg-white p-5 shadow-xl shadow-slate-950/15 dark:bg-slate-900/95 dark:shadow-slate-950/40">
+      <section
+        ref={listingsRef}
+        className="mx-auto mt-10 grid w-full max-w-[1210px] grid-cols-1 gap-6 px-4 pb-12 sm:mt-12 sm:px-5 lg:grid-cols-[180px_minmax(0,1fr)] lg:items-start xl:max-w-[1260px]"
+      >
+        <aside className="lg:sticky lg:top-4">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-base font-black dark:text-white">
+              <SlidersHorizontal size={16} strokeWidth={2.4} aria-hidden="true" />
+              Filters
+            </h2>
+            {(maxPrice < MAX_PRICE || selectedRoomTypes.length > 0) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMaxPrice(MAX_PRICE);
+                  setSelectedRoomTypes([]);
+                }}
+                className="text-xs font-black text-emerald-600 transition hover:text-emerald-700 dark:text-emerald-300 dark:hover:text-emerald-200"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+
+          <div className="rounded-2xl bg-white p-5 shadow-xl shadow-slate-950/15 dark:bg-slate-900/95 dark:shadow-slate-950/40">
+            <div className="flex items-center justify-between gap-2">
               <label
                 htmlFor="maximum-price"
                 className="text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500"
               >
                 Price Range
               </label>
-              <input
-                id="maximum-price"
-                type="range"
-                min="0"
-                max={MAX_PRICE}
-                step="500"
-                value={maxPrice}
-                onChange={(event) => setMaxPrice(Number(event.target.value))}
-                className="mt-5 w-full accent-emerald-500"
-              />
-              <div className="mt-3 flex items-center justify-between text-xs font-black text-slate-700 dark:text-slate-100">
-                <span>Rs. 0</span>
-                <span>Rs. {maxPrice.toLocaleString()}+</span>
-              </div>
-
-              <span className="mt-6 block text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">
-                Room Type
+              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-black text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+                Rs. {maxPrice.toLocaleString()}
               </span>
-              <div className="mt-3 grid gap-2.5">
-                {roomTypes.map((roomType) => (
+            </div>
+            <input
+              id="maximum-price"
+              type="range"
+              min="0"
+              max={MAX_PRICE}
+              step="500"
+              value={maxPrice}
+              onChange={(event) => setMaxPrice(Number(event.target.value))}
+              className="mt-4 w-full accent-emerald-500"
+            />
+            <div className="mt-2 flex items-center justify-between text-xs font-bold text-slate-400 dark:text-slate-500">
+              <span>Rs. 0</span>
+              <span>Rs. {MAX_PRICE.toLocaleString()}+</span>
+            </div>
+
+            <div className="my-5 h-px bg-slate-100 dark:bg-slate-800" />
+
+            <span className="block text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">
+              Room Type
+            </span>
+            <div className="mt-3 grid gap-2">
+              {roomTypes.map((roomType) => {
+                const isChecked = selectedRoomTypes.includes(roomType.value);
+
+                return (
                   <label
                     key={roomType.value}
-                    className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200"
+                    className={`flex cursor-pointer items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-bold transition ${
+                      isChecked
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/40 dark:text-emerald-300"
+                        : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                    }`}
                   >
+                    <span>{roomType.label}</span>
                     <input
                       type="checkbox"
-                      checked={selectedRoomTypes.includes(roomType.value)}
+                      checked={isChecked}
                       onChange={() => toggleRoomType(roomType.value)}
-                      className="h-3.5 w-3.5 accent-emerald-500"
+                      className="sr-only"
                     />
-                    <span>{roomType.label}</span>
+                    {isChecked && (
+                      <Check size={15} strokeWidth={2.6} aria-hidden="true" />
+                    )}
                   </label>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          </aside>
+          </div>
+        </aside>
 
-          <section>
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-lg font-black dark:text-white">Featured Properties</h2>
-              <label className="flex h-9 items-center gap-2 rounded-xl bg-white px-4 text-xs shadow dark:bg-slate-900 dark:shadow-slate-950/30">
-                <span className="text-slate-400">Sort by:</span>
-                <select
-                  className="bg-transparent text-xs font-black text-emerald-600 outline-none dark:text-emerald-300"
-                  aria-label="Sort properties"
-                  defaultValue="newest"
-                >
-                  <option value="newest">Newest first</option>
-                  <option value="price-low">Price low</option>
-                  <option value="price-high">Price high</option>
-                </select>
-              </label>
-            </div>
+        <section>
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+            <h2 className="text-lg font-black dark:text-white">Featured Properties</h2>
+            <label className="flex h-9 items-center gap-2 rounded-xl bg-white px-4 text-xs shadow dark:bg-slate-900 dark:shadow-slate-950/30">
+              <span className="text-slate-400">Sort by:</span>
+              <select
+                className="bg-transparent text-xs font-black text-emerald-600 outline-none dark:text-emerald-300"
+                aria-label="Sort properties"
+                defaultValue="newest"
+              >
+                <option value="newest">Newest first</option>
+                <option value="price-low">Price low</option>
+                <option value="price-high">Price high</option>
+              </select>
+            </label>
+          </div>
 
-            {filteredRooms.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredRooms.map((room) => (
-                  <RoomCard
-                    key={room.id}
-                    room={room}
-                    isSaved={savedRoomIds.includes(room.id)}
-                    onToggleSaved={() => {
-                      const isSaved = savedRoomIds.includes(room.id);
-                      setToastMessage(
-                        isSaved ? "Removed from saved rooms" : "Room saved",
-                      );
-                      void toggleSavedRoom(room.id);
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-xl bg-white/90 px-6 py-12 text-center shadow-xl dark:bg-slate-900/90 dark:shadow-slate-950/40">
-                <Heart
-                  size={32}
-                  className="mx-auto text-rose-500"
-                  aria-hidden="true"
+          {filteredRooms.length > 0 ? (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {filteredRooms.map((room) => (
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  isSaved={savedRoomIds.includes(room.id)}
+                  onToggleSaved={() => {
+                    const isSaved = savedRoomIds.includes(room.id);
+                    setToastMessage(
+                      isSaved ? "Removed from saved rooms" : "Room saved",
+                    );
+                    void toggleSavedRoom(room.id);
+                  }}
                 />
-                <h3 className="mt-3 text-lg font-black dark:text-white">No properties found</h3>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-300">
-                  Try a different area, room type, or price range.
-                </p>
-              </div>
-            )}
-          </section>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl bg-white/90 px-6 py-12 text-center shadow-xl dark:bg-slate-900/90 dark:shadow-slate-950/40">
+              <Heart
+                size={32}
+                className="mx-auto text-rose-500"
+                aria-hidden="true"
+              />
+              <h3 className="mt-3 text-lg font-black dark:text-white">No properties found</h3>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-300">
+                Try a different area, room type, or price range.
+              </p>
+            </div>
+          )}
         </section>
       </section>
 
@@ -362,18 +407,18 @@ export default function DashboardPage() {
         onClose={() => setToastMessage("")}
       />
 
-      <footer className="grid grid-cols-1 gap-7 bg-white px-5 py-6 text-black dark:bg-slate-950 dark:text-slate-100 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-20">
+      <footer className="grid grid-cols-1 gap-8 border-t border-slate-100 bg-white px-5 py-10 text-black dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-20">
         <section>
-          <h2 className="text-2xl font-normal">StayNest</h2>
-          <p className="mt-3 max-w-[270px] text-xs leading-[1.3] text-slate-700 dark:text-slate-300">
+          <h2 className="text-2xl font-black">StayNest</h2>
+          <p className="mt-3 max-w-[270px] text-sm leading-relaxed text-slate-600 dark:text-slate-300">
             Defining the horizon of student living through premium verification
             and global community building.
           </p>
-          <div className="mt-3 flex gap-3">
+          <div className="mt-4 flex gap-2.5">
             {["f", "◎", "t", "v"].map((item) => (
               <span
                 key={item}
-                className="grid h-5 w-5 place-items-center rounded-full border border-black text-[10px] dark:border-slate-100"
+                className="grid h-8 w-8 place-items-center rounded-full border border-slate-300 text-xs font-bold text-slate-600 transition hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:text-slate-300 dark:hover:border-emerald-400 dark:hover:text-emerald-300"
               >
                 {item}
               </span>
@@ -382,43 +427,73 @@ export default function DashboardPage() {
         </section>
 
         <section>
-          <h3 className="text-sm font-normal">Support</h3>
+          <h3 className="text-sm font-black uppercase tracking-wide text-slate-900 dark:text-slate-100">
+            Support
+          </h3>
           <a
             href="mailto:support@staynest.com?subject=Help Center"
-            className="mt-2 block text-sm"
+            className="mt-3 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
           >
             Help Center
           </a>
-          <a href="mailto:support@staynest.com" className="mt-1 block text-sm">
+          <a
+            href="mailto:support@staynest.com"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Contact Support
           </a>
-          <a href="mailto:safety@staynest.com" className="mt-1 block text-sm">
+          <a
+            href="mailto:safety@staynest.com"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Safety Guide
           </a>
         </section>
 
         <section>
-          <h3 className="text-sm font-normal">Company Us</h3>
-          <Link href="/profile" className="mt-2 block text-sm">
+          <h3 className="text-sm font-black uppercase tracking-wide text-slate-900 dark:text-slate-100">
+            Company
+          </h3>
+          <Link
+            href="/profile"
+            className="mt-3 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             About Us
           </Link>
-          <a href="mailto:hello@staynest.com" className="mt-1 block text-sm">
-            Contacts Us
+          <a
+            href="mailto:hello@staynest.com"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
+            Contact Us
           </a>
-          <a href="mailto:partners@staynest.com" className="mt-1 block text-sm">
+          <a
+            href="mailto:partners@staynest.com"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Partner with Us
           </a>
         </section>
 
         <section>
-          <h3 className="text-sm font-normal">Legal</h3>
-          <Link href="/legal#terms" className="mt-2 block text-sm">
+          <h3 className="text-sm font-black uppercase tracking-wide text-slate-900 dark:text-slate-100">
+            Legal
+          </h3>
+          <Link
+            href="/legal#terms"
+            className="mt-3 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Terms of Services
           </Link>
-          <Link href="/legal#cookies" className="mt-1 block text-sm">
+          <Link
+            href="/legal#cookies"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Cookies
           </Link>
-          <Link href="/legal#privacy" className="mt-1 block text-sm">
+          <Link
+            href="/legal#privacy"
+            className="mt-2 block text-sm text-slate-600 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300"
+          >
             Privacy policy
           </Link>
         </section>

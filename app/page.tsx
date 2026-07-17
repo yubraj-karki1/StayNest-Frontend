@@ -12,13 +12,7 @@ export default function Page() {
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const params = new URLSearchParams();
-
-    if (location.trim()) params.set("location", location.trim());
-    if (price !== "any") params.set("price", price);
-
-    const query = params.toString();
-    router.push(query ? `/dashboard?${query}` : "/dashboard");
+    router.push("/login");
   };
 
   return (
