@@ -28,21 +28,21 @@ export default function Page() {
 
         <div className="flex flex-wrap items-center justify-end gap-3 sm:gap-6">
           <Link
-            href="/saved"
+            href="/login"
             className="hidden items-center gap-1.5 text-sm font-bold text-white/90 transition hover:text-white sm:inline-flex"
           >
             <Heart size={16} strokeWidth={2.1} aria-hidden="true" />
             <span>Saved</span>
           </Link>
           <Link
-            href="/profile"
+            href="/login"
             className="hidden items-center gap-1.5 text-sm font-bold text-white/90 transition hover:text-white sm:inline-flex"
           >
             <User size={16} strokeWidth={2.1} aria-hidden="true" />
             <span>Profile</span>
           </Link>
           <Link
-            href="/notifications"
+            href="/login"
             className="grid h-9 w-9 place-items-center rounded-full text-white/90 transition hover:bg-white/15"
             aria-label="Notifications"
           >
