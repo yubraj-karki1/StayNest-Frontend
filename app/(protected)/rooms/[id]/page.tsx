@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   Bath,
   Car,
+  Clock,
   CookingPot,
   MapPin,
   Phone,
@@ -19,7 +20,8 @@ import AppNav from "../../../_components/app-nav";
 import RequestBookingButton from "../../../_components/request-booking-button";
 import SafeRoomImage from "../../../_components/safe-room-image";
 import SaveRoomButton from "../../../_components/save-room-button";
-import { apiRequest, type Room } from "../../../_lib/api";
+import WithdrawBookingModal from "../../../_components/withdraw-booking-modal";
+import { apiRequest, type Booking, type Room } from "../../../_lib/api";
 
 const facilityIcons: Record<string, typeof Wifi> = {
   WiFi: Wifi,
@@ -37,12 +39,53 @@ export default function RoomDetailsPage({
 }) {
   const { id } = use(params);
   const [room, setRoom] = useState<Room | null | undefined>(undefined);
+  const [pendingBooking, setPendingBooking] = useState<Booking | null>(null);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [withdrawError, setWithdrawError] = useState("");
 
   useEffect(() => {
     apiRequest<{ room: Room }>(`/rooms/${id}`)
       .then(({ room: item }) => setRoom(item))
       .catch(() => setRoom(null));
   }, [id]);
+
+  const loadPendingBooking = () => {
+    apiRequest<{ bookings: Booking[] }>("/bookings")
+      .then(({ bookings }) =>
+        setPendingBooking(
+          bookings.find(
+            (booking) => booking.roomId === id && booking.status === "pending",
+          ) ?? null,
+        ),
+      )
+      .catch(() => setPendingBooking(null));
+  };
+
+  useEffect(() => {
+    loadPendingBooking();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const withdrawBooking = async () => {
+    if (!pendingBooking) return;
+    setIsWithdrawing(true);
+    setWithdrawError("");
+
+    try {
+      await apiRequest(`/bookings/${pendingBooking._id}/withdraw`, {
+        method: "PATCH",
+      });
+      setPendingBooking(null);
+      setIsWithdrawModalOpen(false);
+    } catch (error) {
+      setWithdrawError(
+        error instanceof Error ? error.message : "Unable to withdraw request",
+      );
+    } finally {
+      setIsWithdrawing(false);
+    }
+  };
 
   if (room === undefined) {
     return (
@@ -125,76 +168,131 @@ export default function RoomDetailsPage({
             </article>
           </div>
 
-          <aside className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-2xl shadow-slate-900/15 sm:p-8 lg:sticky lg:top-5">
-            <h1 className="break-words text-3xl font-black leading-tight tracking-normal text-slate-950">
-              {room.title}
-            </h1>
-            <p className="mt-3 flex min-w-0 items-center gap-1 break-words text-sm font-bold text-slate-500">
-              <MapPin size={14} aria-hidden="true" />
-              {room.area}, Nepal
-            </p>
-            <p className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-slate-600">
-              <Star size={14} className="fill-amber-400 text-amber-400" aria-hidden="true" />
-              {room.rating} · {room.reviews} reviews
-            </p>
+          <div className="grid gap-4 lg:sticky lg:top-5">
+            <aside className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-2xl shadow-slate-900/15 sm:p-8">
+              <h1 className="break-words text-3xl font-black leading-tight tracking-normal text-slate-950">
+                {room.title}
+              </h1>
+              <p className="mt-3 flex min-w-0 items-center gap-1 break-words text-sm font-bold text-slate-500">
+                <MapPin size={14} aria-hidden="true" />
+                {room.area}, Nepal
+              </p>
+              <p className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-slate-600">
+                <Star size={14} className="fill-amber-400 text-amber-400" aria-hidden="true" />
+                {room.rating} · {room.reviews} reviews
+              </p>
 
-            <div className="my-6 rounded-2xl bg-orange-50 p-4">
-              <span className="text-3xl font-black text-orange-500">
-                {room.price}
+              <div className="my-6 rounded-2xl bg-orange-50 p-4">
+                <span className="text-3xl font-black text-orange-500">
+                  {room.price}
+                </span>
+                <span className="text-sm font-bold text-slate-500"> /month</span>
+              </div>
+
+              <span className="block text-xs font-black uppercase tracking-wide text-slate-400">
+                Facilities
               </span>
-              <span className="text-sm font-bold text-slate-500"> /month</span>
-            </div>
+              <div className="mb-6 mt-3 flex flex-wrap gap-2">
+                {room.facilities.map((facility) => {
+                  const FacilityIcon = facilityIcons[facility] ?? Star;
 
-            <span className="block text-xs font-black uppercase tracking-wide text-slate-400">
-              Facilities
-            </span>
-            <div className="mb-6 mt-3 flex flex-wrap gap-2">
-              {room.facilities.map((facility) => {
-                const FacilityIcon = facilityIcons[facility] ?? Star;
+                  return (
+                    <span
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600"
+                      key={facility}
+                    >
+                      <FacilityIcon size={13} aria-hidden="true" />
+                      {facility}
+                    </span>
+                  );
+                })}
+              </div>
 
-                return (
-                  <span
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600"
-                    key={facility}
-                  >
-                    <FacilityIcon size={13} aria-hidden="true" />
-                    {facility}
+              <span className="block text-xs font-black uppercase tracking-wide text-slate-400">
+                Owner
+              </span>
+              <div className="mb-6 mt-3 flex items-center gap-3">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-amber-400 text-white">
+                  <User size={20} aria-hidden="true" />
+                </span>
+                <span>
+                  <span className="block text-xs font-bold text-slate-400">
+                    Owner
                   </span>
-                );
-              })}
-            </div>
-
-            <span className="block text-xs font-black uppercase tracking-wide text-slate-400">
-              Owner
-            </span>
-            <div className="mb-6 mt-3 flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-amber-400 text-white">
-                <User size={20} aria-hidden="true" />
-              </span>
-              <span>
-                <span className="block text-xs font-bold text-slate-400">
-                  Owner
+                  <span className="mt-1 block text-sm font-black text-slate-900">
+                    {room.owner}
+                  </span>
                 </span>
-                <span className="mt-1 block text-sm font-black text-slate-900">
-                  {room.owner}
-                </span>
-              </span>
-            </div>
+              </div>
 
-            <RequestBookingButton roomId={room.id} ownerName={room.owner} />
-            <a
-              href={`tel:${room.ownerPhone}`}
-              className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-500 bg-white text-sm font-black text-emerald-600 transition hover:bg-emerald-50"
-            >
-              <Phone size={16} aria-hidden="true" />
-              Call Owner
-            </a>
-            <div className="mt-3">
-              <SaveRoomButton roomId={room.id} />
-            </div>
-          </aside>
+              <RequestBookingButton
+                key={pendingBooking ? "pending" : "none"}
+                roomId={room.id}
+                ownerName={room.owner}
+                initiallySent={!!pendingBooking}
+                onSuccess={loadPendingBooking}
+              />
+              <a
+                href={`tel:${room.ownerPhone}`}
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-500 bg-white text-sm font-black text-emerald-600 transition hover:bg-emerald-50"
+              >
+                <Phone size={16} aria-hidden="true" />
+                Call Owner
+              </a>
+              <div className="mt-3">
+                <SaveRoomButton roomId={room.id} />
+              </div>
+            </aside>
+
+            {pendingBooking && (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/40">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="inline-flex items-center gap-2 text-sm font-black text-amber-700 dark:text-amber-300">
+                      <Clock size={15} aria-hidden="true" />
+                      Pending Request
+                    </p>
+                    <p className="mt-1 text-xs font-bold text-amber-600/80 dark:text-amber-400/80">
+                      Requested on{" "}
+                      {new Date(pendingBooking.createdAt).toLocaleDateString(undefined, {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}{" "}
+                      ·{" "}
+                      {new Date(pendingBooking.createdAt).toLocaleTimeString(undefined, {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsWithdrawModalOpen(true)}
+                    className="flex h-10 items-center justify-center rounded-xl border border-rose-300 bg-white px-4 text-xs font-black text-rose-600 transition hover:bg-rose-50 dark:border-rose-900 dark:bg-slate-900 dark:text-rose-300 dark:hover:bg-rose-950/60"
+                  >
+                    Withdraw Request
+                  </button>
+                </div>
+                {withdrawError && (
+                  <p className="mt-3 text-xs font-bold text-rose-600" role="alert">
+                    {withdrawError}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </section>
+
+      {isWithdrawModalOpen && pendingBooking && (
+        <WithdrawBookingModal
+          roomTitle={room.title}
+          isWithdrawing={isWithdrawing}
+          onConfirm={withdrawBooking}
+          onCancel={() => setIsWithdrawModalOpen(false)}
+        />
+      )}
 
       <footer className="grid grid-cols-1 gap-7 bg-white px-5 py-8 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-20">
         <section>

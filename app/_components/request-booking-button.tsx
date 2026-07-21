@@ -9,13 +9,17 @@ export default function RequestBookingButton({
   roomId,
   ownerName,
   className = "",
+  onSuccess,
+  initiallySent = false,
 }: {
   roomId: string;
   ownerName?: string;
   className?: string;
+  onSuccess?: () => void;
+  initiallySent?: boolean;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">(
-    "idle",
+    initiallySent ? "sent" : "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
   const [toastMessage, setToastMessage] = useState("");
@@ -36,6 +40,7 @@ export default function RequestBookingButton({
       setToastMessage(
         ownerName ? `Booking request sent to ${ownerName}` : "Booking request sent",
       );
+      onSuccess?.();
     } catch (error) {
       setStatus("error");
       setErrorMessage(

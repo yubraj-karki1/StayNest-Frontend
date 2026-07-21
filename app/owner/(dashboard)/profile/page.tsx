@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   Building2,
+  Camera,
   CalendarCheck,
   CalendarClock,
   CheckCircle2,
   ChevronRight,
   Edit3,
   Home,
+  Loader2,
   LockKeyhole,
   Mail,
   MapPin,
@@ -21,6 +23,7 @@ import {
 } from "lucide-react";
 import OwnerNav from "../../_components/owner-nav";
 import OwnerLogoutButton from "../../_components/owner-logout-button";
+import SafeRoomImage from "../../../_components/safe-room-image";
 import { ownerApiRequest, type OwnerProfile } from "../../../_lib/owner-api";
 import { type Booking, type Room } from "../../../_lib/api";
 
@@ -30,6 +33,7 @@ export default function OwnerProfilePage() {
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("Kathmandu, Nepal");
   const [about, setAbout] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [joined, setJoined] = useState("");
   const [rooms, setRooms] = useState<Room[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -37,6 +41,9 @@ export default function OwnerProfilePage() {
   const [isSaved, setIsSaved] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [profileError, setProfileError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     ownerApiRequest<{ user: OwnerProfile }>("/profile")
@@ -46,6 +53,7 @@ export default function OwnerProfilePage() {
         setPhone(user.contactNo);
         setLocation(user.location);
         setAbout(user.about);
+        setAvatarUrl(user.avatarUrl ?? "");
         setJoined(
           new Date(user.createdAt).toLocaleDateString(undefined, {
             month: "long",
@@ -92,6 +100,59 @@ export default function OwnerProfilePage() {
     }
   };
 
+  const handleAvatarChange = async (file: File | null) => {
+    if (!file) return;
+    setAvatarError("");
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError("Image must be 5MB or smaller.");
+      return;
+    }
+    if (!window.confirm("Set this as your new profile picture?")) {
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const previewUrl = URL.createObjectURL(file);
+    const previousAvatarUrl = avatarUrl;
+    setAvatarUrl(previewUrl);
+
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const uploaded = await ownerApiRequest<{ url: string }>("/uploads/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      await ownerApiRequest("/profile", {
+        method: "PUT",
+        body: JSON.stringify({
+          fullName: name,
+          email,
+          contactNo: phone,
+          location,
+          about,
+          avatarUrl: uploaded.url,
+        }),
+      });
+
+      setAvatarUrl(uploaded.url);
+    } catch (error) {
+      setAvatarUrl(previousAvatarUrl);
+      setAvatarError(
+        error instanceof Error ? error.message : "Unable to upload photo",
+      );
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+      setIsUploadingAvatar(false);
+    }
+  };
+
   const shareProfile = async () => {
     const shareData = {
       title: `${name}'s StayNest Owner profile`,
@@ -130,7 +191,41 @@ export default function OwnerProfilePage() {
         <div className="mx-auto flex w-[min(1160px,100%)] flex-wrap items-end justify-between gap-7">
           <div className="flex min-w-0 flex-wrap items-center gap-6">
             <div className="relative grid h-28 w-28 flex-none rotate-2 place-items-center rounded-2xl border-4 border-white bg-indigo-100 shadow-xl shadow-slate-900/25 dark:border-slate-700 dark:bg-slate-800">
-              <Building2 size={40} className="text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
+              {avatarUrl ? (
+                <SafeRoomImage
+                  src={avatarUrl}
+                  alt={name || "Owner"}
+                  fill
+                  sizes="112px"
+                  className="rounded-xl object-cover"
+                />
+              ) : (
+                <Building2 size={40} className="text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
+              )}
+
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="sr-only"
+                id="owner-avatar-upload"
+                onChange={(event) => {
+                  void handleAvatarChange(event.target.files?.[0] ?? null);
+                  event.target.value = "";
+                }}
+              />
+              <label
+                htmlFor="owner-avatar-upload"
+                className="absolute -bottom-3 -left-3 grid h-9 w-9 -rotate-2 cursor-pointer place-items-center rounded-full border-2 border-white bg-slate-900 text-white shadow-lg transition hover:bg-slate-700 dark:border-slate-800"
+                aria-label="Upload profile photo"
+              >
+                {isUploadingAvatar ? (
+                  <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <Camera size={14} aria-hidden="true" />
+                )}
+              </label>
+
               <span className="absolute -bottom-3 -right-3 inline-flex -rotate-2 items-center gap-1 rounded-full border-2 border-white bg-indigo-50 px-2 py-1 text-[10px] font-black text-indigo-700 dark:border-slate-800 dark:bg-indigo-950 dark:text-indigo-200">
                 <ShieldCheck size={11} aria-hidden="true" />
                 Owner
@@ -340,6 +435,11 @@ export default function OwnerProfilePage() {
               {profileError && (
                 <p className="mt-5 text-sm font-bold text-rose-600" role="alert">
                   {profileError}
+                </p>
+              )}
+              {avatarError && (
+                <p className="mt-5 text-sm font-bold text-rose-600" role="alert">
+                  {avatarError}
                 </p>
               )}
             </div>

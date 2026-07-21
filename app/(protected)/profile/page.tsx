@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
+  Camera,
   CalendarClock,
   CheckCircle2,
   ChevronRight,
   Edit3,
   Heart,
   Home,
+  Loader2,
   LockKeyhole,
   Mail,
   MapPin,
@@ -19,9 +20,11 @@ import {
   Share2,
   ShieldCheck,
   Star,
+  UserRound,
 } from "lucide-react";
 import AppNav from "../../_components/app-nav";
 import LogoutButton from "../../_components/logout-button";
+import SafeRoomImage from "../../_components/safe-room-image";
 import { useSavedRooms } from "../../_components/use-saved-rooms";
 import { apiRequest, type UserProfile } from "../../_lib/api";
 
@@ -34,10 +37,14 @@ export default function ProfilePage() {
   const [about, setAbout] = useState(
     "Passionate traveler and tech enthusiast. Always looking for unique architectural stays and local cultural experiences in the heart of the city.",
   );
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [profileError, setProfileError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     apiRequest<{ user: UserProfile }>("/profile")
@@ -47,6 +54,7 @@ export default function ProfilePage() {
         setPhone(user.contactNo);
         setLocation(user.location);
         setAbout(user.about);
+        setAvatarUrl(user.avatarUrl ?? "");
       })
       .catch((error) =>
         setProfileError(
@@ -76,6 +84,59 @@ export default function ProfilePage() {
       setProfileError(
         error instanceof Error ? error.message : "Unable to save profile",
       );
+    }
+  };
+
+  const handleAvatarChange = async (file: File | null) => {
+    if (!file) return;
+    setAvatarError("");
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError("Image must be 5MB or smaller.");
+      return;
+    }
+    if (!window.confirm("Set this as your new profile picture?")) {
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const previewUrl = URL.createObjectURL(file);
+    const previousAvatarUrl = avatarUrl;
+    setAvatarUrl(previewUrl);
+
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const uploaded = await apiRequest<{ url: string }>("/uploads/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      await apiRequest("/profile", {
+        method: "PUT",
+        body: JSON.stringify({
+          fullName: name,
+          email,
+          contactNo: phone,
+          location,
+          about,
+          avatarUrl: uploaded.url,
+        }),
+      });
+
+      setAvatarUrl(uploaded.url);
+    } catch (error) {
+      setAvatarUrl(previousAvatarUrl);
+      setAvatarError(
+        error instanceof Error ? error.message : "Unable to upload photo",
+      );
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+      setIsUploadingAvatar(false);
     }
   };
 
@@ -114,13 +175,43 @@ export default function ProfilePage() {
         <div className="mx-auto flex w-[min(1160px,100%)] flex-wrap items-end justify-between gap-7">
           <div className="flex min-w-0 flex-wrap items-center gap-6">
             <div className="relative h-28 w-28 flex-none rotate-2 rounded-2xl border-4 border-white bg-slate-200 shadow-xl shadow-slate-900/25 dark:border-slate-700 dark:bg-slate-800">
-              <Image
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=85"
-                alt={name}
-                fill
-                sizes="112px"
-                className="rounded-xl object-cover"
+              {avatarUrl ? (
+                <SafeRoomImage
+                  src={avatarUrl}
+                  alt={name}
+                  fill
+                  sizes="112px"
+                  className="rounded-xl object-cover"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center rounded-xl bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                  <UserRound size={40} aria-hidden="true" />
+                </div>
+              )}
+
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="sr-only"
+                id="avatar-upload"
+                onChange={(event) => {
+                  void handleAvatarChange(event.target.files?.[0] ?? null);
+                  event.target.value = "";
+                }}
               />
+              <label
+                htmlFor="avatar-upload"
+                className="absolute -bottom-3 -left-3 grid h-9 w-9 -rotate-2 cursor-pointer place-items-center rounded-full border-2 border-white bg-slate-900 text-white shadow-lg transition hover:bg-slate-700 dark:border-slate-800"
+                aria-label="Upload profile photo"
+              >
+                {isUploadingAvatar ? (
+                  <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <Camera size={14} aria-hidden="true" />
+                )}
+              </label>
+
               <span className="absolute -bottom-3 -right-3 inline-flex -rotate-2 items-center gap-1 rounded-full border-2 border-white bg-emerald-50 px-2 py-1 text-[10px] font-black text-emerald-700 dark:border-slate-800 dark:bg-emerald-950 dark:text-emerald-200">
                 <CheckCircle2 size={11} aria-hidden="true" />
                 Verified
@@ -328,6 +419,11 @@ export default function ProfilePage() {
               {profileError && (
                 <p className="mt-5 text-sm font-bold text-rose-600" role="alert">
                   {profileError}
+                </p>
+              )}
+              {avatarError && (
+                <p className="mt-5 text-sm font-bold text-rose-600" role="alert">
+                  {avatarError}
                 </p>
               )}
             </div>

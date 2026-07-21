@@ -8,6 +8,7 @@ export type UserProfile = {
   contactNo: string;
   location: string;
   about: string;
+  avatarUrl?: string;
   role: "admin" | "owner" | "user";
   createdAt: string;
   updatedAt: string;
@@ -70,7 +71,9 @@ export async function apiRequest<T>(
     response = await fetch(`${API_URL}${path}`, {
       ...options,
       headers: {
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.body && !(options.body instanceof FormData)
+          ? { "Content-Type": "application/json" }
+          : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },

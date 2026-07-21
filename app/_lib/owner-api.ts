@@ -8,6 +8,7 @@ export type OwnerProfile = {
   contactNo: string;
   location: string;
   about: string;
+  avatarUrl?: string;
   role: "owner";
   createdAt: string;
   updatedAt: string;
