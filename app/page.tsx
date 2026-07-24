@@ -57,7 +57,7 @@ export default function Page() {
         </div>
       </nav>
 
-      <section className="flex min-h-screen items-center justify-center bg-[linear-gradient(rgba(2,6,23,0.5),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center px-4 py-28 sm:px-6">
+      <section className="flex min-h-screen items-center justify-center bg-[linear-gradient(rgba(2,6,23,0.5),rgba(2,6,23,0.78)),url('/images/hero-hostel.jpg')] bg-cover bg-center px-4 py-28 sm:px-6">
         <div className="w-full max-w-[640px] text-center">
           <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-white sm:text-6xl">
             Find Your Perfect

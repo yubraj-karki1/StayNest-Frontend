@@ -68,7 +68,7 @@ export default function RegisterForm() {
       <section className="mx-auto grid min-h-[calc(100vh-72px)] w-[min(1120px,calc(100%-48px))] grid-cols-1 items-center gap-10 pb-10 lg:grid-cols-2 lg:gap-20">
         <aside className="relative min-h-[360px] overflow-hidden rounded-3xl bg-slate-200 shadow-xl shadow-slate-200/70 lg:min-h-[calc(100vh-144px)]">
           <Image
-            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=90"
+            src="/images/register-room.jpg"
             alt="Modern StayNest residence"
             fill
             priority

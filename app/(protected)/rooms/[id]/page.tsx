@@ -117,7 +117,7 @@ export default function RoomDetailsPage({
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(214,221,211,0.72),rgba(214,221,211,0.72)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.84),rgba(2,6,23,0.84)),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(214,221,211,0.72),rgba(214,221,211,0.72)),url('/images/room-detail-hero.jpg')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.84),rgba(2,6,23,0.84)),url('/images/room-detail-hero.jpg')] dark:text-slate-100 sm:bg-fixed">
       <AppNav />
 
       <section className="mx-auto w-full max-w-[1120px] px-4 py-6 pb-20 sm:px-5">

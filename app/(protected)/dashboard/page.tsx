@@ -188,7 +188,7 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white text-black dark:bg-slate-950 dark:text-slate-100">
-      <section className="relative bg-[linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.78)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=90')] bg-cover bg-center pb-16 sm:pb-20 lg:bg-fixed">
+      <section className="relative bg-[linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.78)),url('/images/dashboard-hero.jpg')] bg-cover bg-center pb-16 sm:pb-20 lg:bg-fixed">
         <AppNav variant="hero" />
 
         <section className="mx-auto mt-10 w-full max-w-[640px] px-4 text-center sm:mt-14 lg:mt-16">

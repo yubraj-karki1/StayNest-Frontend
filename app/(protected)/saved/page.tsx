@@ -21,7 +21,7 @@ export default function SavedRoomsPage() {
   const savedRooms = rooms.filter((room) => savedRoomIds.includes(room.id));
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-100 sm:bg-fixed">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.9),rgba(232,237,228,0.9)),url('/images/hero-hostel.jpg')] bg-cover bg-center text-slate-900 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('/images/hero-hostel.jpg')] dark:text-slate-100 sm:bg-fixed">
       <AppNav />
 
       <section className="mx-auto w-full max-w-[1100px] px-4 py-11 sm:px-5">

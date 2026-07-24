@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Bell, Home, House, Star, TrendingDown } from "lucide-react";
+import { ArrowLeft, Bell, Home, House, Settings, Star, TrendingDown } from "lucide-react";
 import AppNav from "../../_components/app-nav";
+import { useNotificationPrefs } from "../../_components/use-notification-prefs";
 import { apiRequest } from "../../_lib/api";
 
 type Notification = {
@@ -24,7 +25,11 @@ const notificationIcons = {
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const unreadIds = notifications
+  const { prefs } = useNotificationPrefs();
+  const visibleNotifications = notifications.filter(
+    (notification) => prefs[notification.type],
+  );
+  const unreadIds = visibleNotifications
     .filter((notification) => !notification.read)
     .map((notification) => notification.id);
 
@@ -45,7 +50,7 @@ export default function NotificationsPage() {
 
   const markAllAsRead = async () => {
     setNotifications((current) =>
-      current.map((item) => ({ ...item, read: true })),
+      current.map((item) => (prefs[item.type] ? { ...item, read: true } : item)),
     );
     await apiRequest("/notifications/read-all", { method: "POST" }).catch(
       () => undefined,
@@ -53,7 +58,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1800&q=85')] dark:text-slate-200 sm:bg-fixed">
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(rgba(232,237,228,0.78),rgba(232,237,228,0.78)),url('/images/hero-hostel.jpg')] bg-cover bg-center text-slate-700 dark:bg-[linear-gradient(rgba(2,6,23,0.88),rgba(2,6,23,0.88)),url('/images/hero-hostel.jpg')] dark:text-slate-200 sm:bg-fixed">
       <AppNav unreadCount={unreadIds.length} />
 
       <section className="mx-auto w-full max-w-[620px] px-3 py-8 sm:px-5 sm:py-14">
@@ -75,23 +80,32 @@ export default function NotificationsPage() {
                 Stay updated with new listings
               </p>
             </div>
-            <button
-              type="button"
-              className={`flex-none text-sm font-black ${
-                unreadIds.length > 0
-                  ? "cursor-pointer text-emerald-600"
-                  : "cursor-default text-slate-400"
-              }`}
-              onClick={markAllAsRead}
-              disabled={unreadIds.length === 0}
-            >
-              {unreadIds.length > 0 ? "Mark all as read" : "All caught up"}
-            </button>
+            <div className="flex flex-none items-center gap-4">
+              <button
+                type="button"
+                className={`text-sm font-black ${
+                  unreadIds.length > 0
+                    ? "cursor-pointer text-emerald-600"
+                    : "cursor-default text-slate-400"
+                }`}
+                onClick={markAllAsRead}
+                disabled={unreadIds.length === 0}
+              >
+                {unreadIds.length > 0 ? "Mark all as read" : "All caught up"}
+              </button>
+              <Link
+                href="/settings"
+                className="inline-flex items-center gap-1.5 text-sm font-black text-slate-500 hover:text-emerald-700"
+                aria-label="Notification settings"
+              >
+                <Settings size={16} aria-hidden="true" />
+              </Link>
+            </div>
           </header>
 
           <div className="bg-white">
-            {notifications.length > 0 ? (
-              notifications.map((notification) => {
+            {visibleNotifications.length > 0 ? (
+              visibleNotifications.map((notification) => {
                 const Icon = notificationIcons[notification.type];
                 const isUnread = unreadIds.includes(notification.id);
 

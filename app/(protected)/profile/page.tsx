@@ -434,10 +434,9 @@ export default function ProfilePage() {
               Account Management
             </h2>
             <div className="grid gap-3">
-              <button
-                type="button"
+              <Link
+                href="/settings"
                 className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left shadow-lg shadow-slate-200/50 transition hover:-translate-y-0.5 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/40 dark:hover:bg-slate-800"
-                onClick={() => setIsEditing(true)}
               >
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                   <Settings size={16} aria-hidden="true" />
@@ -447,11 +446,11 @@ export default function ProfilePage() {
                     Account Settings
                   </span>
                   <span className="block text-xs text-slate-500 dark:text-slate-400">
-                    Security & privacy preferences
+                    Appearance & notification preferences
                   </span>
                 </span>
                 <ChevronRight size={16} aria-hidden="true" />
-              </button>
+              </Link>
 
               <Link
                 href="/saved"
