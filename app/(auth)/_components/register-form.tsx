@@ -13,7 +13,7 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Submit handler: sends form data to the register API and redirects on success
+  // Submit handler
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -31,11 +31,8 @@ export default function RegisterForm() {
           password: formData.get("password"),
         }),
       });
-
-      // Registration succeeded, send user to login
       router.push("/login");
     } catch (requestError) {
-      // Show error message from API or a fallback
       setError(
         requestError instanceof Error
           ? requestError.message
