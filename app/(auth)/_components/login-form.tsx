@@ -13,6 +13,7 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Submit handler
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -20,6 +21,7 @@ export default function LoginForm() {
     setIsSubmitting(true);
 
     try {
+      // Call backend to authenticate
       const result = await apiRequest<{ token: string }>("/auth/login", {
         method: "POST",
         body: JSON.stringify({
@@ -28,9 +30,11 @@ export default function LoginForm() {
         }),
       });
 
+      // Save auth token and go to dashboard
       setToken(result.token);
       router.push("/dashboard");
     } catch (requestError) {
+      // Show error message from API or a fallback
       setError(
         requestError instanceof Error ? requestError.message : "Login failed",
       );
@@ -41,6 +45,7 @@ export default function LoginForm() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#d1fae5_0%,_#ecfeff_35%,_#f8fafc_70%)] text-slate-900 dark:bg-[radial-gradient(circle_at_top_left,_#0f172a_0%,_#111827_45%,_#020617_100%)] dark:text-slate-100">
+      {/* Top bar: logo, theme toggle, help link */}
       <header className="flex h-[72px] items-center justify-between px-5 sm:px-8 lg:px-12">
         <Link
           href="/"
@@ -63,6 +68,7 @@ export default function LoginForm() {
       </header>
 
       <section className="mx-auto grid min-h-[calc(100vh-72px)] w-[min(1120px,calc(100%-48px))] grid-cols-1 items-center gap-10 pb-10 lg:grid-cols-2 lg:gap-20">
+        {/* Left side: promo image and marketing copy */}
         <aside className="relative min-h-[360px] overflow-hidden rounded-3xl bg-slate-200 shadow-xl shadow-slate-200/70 lg:min-h-[calc(100vh-144px)]">
           <Image
             src="/images/login-room.jpg"
@@ -89,6 +95,7 @@ export default function LoginForm() {
           </div>
         </aside>
 
+        {/* Right side: login form */}
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md justify-self-center"

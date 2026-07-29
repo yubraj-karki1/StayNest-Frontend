@@ -45,7 +45,6 @@ export default function RegisterForm() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#d1fae5_0%,_#ecfeff_35%,_#f8fafc_70%)] text-slate-900 dark:bg-[radial-gradient(circle_at_top_left,_#0f172a_0%,_#111827_45%,_#020617_100%)] dark:text-slate-100">
-      {/* Top bar: logo, theme toggle, help link */}
       <header className="flex h-[72px] items-center justify-between px-5 sm:px-8 lg:px-12">
         <Link
           href="/"
@@ -68,7 +67,6 @@ export default function RegisterForm() {
       </header>
 
       <section className="mx-auto grid min-h-[calc(100vh-72px)] w-[min(1120px,calc(100%-48px))] grid-cols-1 items-center gap-10 pb-10 lg:grid-cols-2 lg:gap-20">
-        {/* Left side: promo image and marketing copy */}
         <aside className="relative min-h-[360px] overflow-hidden rounded-3xl bg-slate-200 shadow-xl shadow-slate-200/70 lg:min-h-[calc(100vh-144px)]">
           <Image
             src="/images/register-room.jpg"
@@ -94,8 +92,6 @@ export default function RegisterForm() {
             </p>
           </div>
         </aside>
-
-        {/* Right side: registration form */}
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md justify-self-center"
